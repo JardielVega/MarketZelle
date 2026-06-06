@@ -1,0 +1,407 @@
+---
+import Layout from '../layouts/Layout.astro';
+import products from '../data/products.json';
+
+const whatsappNumber = '5352572028';
+const whatsappBase = `https://wa.me/${whatsappNumber}`;
+
+const categories = [
+  { 
+    id: 'todos', 
+    name: 'Todos', 
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>'
+  },
+  { 
+    id: 'top', 
+    name: 'Más Vendidos', 
+    icon: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>'
+  },
+  { 
+    id: 'alimentos', 
+    name: 'Alimentos', 
+    icon: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2c1.105 0 2 .895 2 2 0 .352-.098.682-.268.968.897.406 1.66 1.127 2.096 2.032.442-.068.895-.1 1.355-.1 3.859 0 7 2.686 7 6s-3.141 6-7 6c-.46 0-.913-.032-1.355-.1-.436.905-1.199 1.626-2.096 2.032.17.286.268.616.268.968 0 1.105-.895 2-2 2s-2-.895-2-2c0-.352.098-.682.268-.968-.897-.406-1.66-1.127-2.096-2.032-.442.068-.895.1-1.355.1C3.141 18 0 15.314 0 12s3.141-6 7-6c.46 0 .913.032 1.355.1.436-.905 1.199-1.626 2.096-2.032C10.098 3.682 10 3.352 10 3c0-1.105.895-2 2-2z"></path></svg>'
+  },
+  { 
+    id: 'electronicos', 
+    name: 'Electrónicos', 
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>'
+  },
+  { 
+    id: 'aseo', 
+    name: 'Aseo', 
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>'
+  },
+];
+
+const testimonials = [
+  { name: 'María González', text: 'Excelente servicio, mi mamá en Camagüey recibió todo en perfecto estado. ¡Muy agradecida!', rating: 5 },
+  { name: 'Carlos Rodríguez', text: 'Rápido y confiable. Los productos llegaron frescos y a tiempo. 100% recomendado.', rating: 5 },
+  { name: 'Ana Martínez', text: 'Llevo 6 meses comprando aquí y nunca he tenido problemas. Mis abuelos están felices.', rating: 5 },
+  { name: 'Pedro Hernández', text: 'Los precios son justos y la atención por WhatsApp es increíble. Responden al instante.', rating: 4 },
+];
+
+const bannerSlides = [
+  { title: 'Envíos directos a Camagüey', subtitle: 'Tus productos llegan a la puerta de tus seres queridos', image: '/banner1.jpg' },
+  { title: 'Productos de primera calidad', subtitle: 'Solo lo mejor para tu familia en Cuba', image: '/banner2.jpg' },
+  { title: 'Variedad para toda la familia', subtitle: 'Encuentra alimentos, aseo y más en un solo lugar', image: '/banner3.jpg' },
+  { title: 'Ofertas semanales', subtitle: 'Descuentos especiales en combos de alimentos', image: '/banner4.jpg' },
+];
+---
+
+<Layout>
+  <!-- TOP DISCOUNT BANNER -->
+  <div class="bg-emerald-700 text-white text-center py-2 px-4 text-sm font-medium tracking-wide">
+     <span class="font-bold">¡El puente directo</span> entre tú y tu familia en la ciudad de los <span class="bg-white/20 px-2 py-0.5 rounded font-bold ml-1">Tinajones</span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 shrink-0">
+        <div class="w-10 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center">
+          <img src="/Productos/logo.jpg" alt="Logo de Market Zelle" class="w-full h-full object-cover" />
+        </div>
+        <div class="hidden sm:block">
+          <h1 class="text-xl font-extrabold text-gray-900 leading-tight">Market<span class="text-emerald-600">Zelle</span></h1>
+          <p class="text-[10px] text-gray-400 -mt-1 font-medium">Envíos a Cuba • Camagüey</p>
+        </div>
+      </a>
+
+      <!-- Search Bar -->
+      <div class="flex-1 max-w-xl">
+        <div class="relative">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Buscar productos..."
+            class="w-full pl-11 pr-4 py-2.5 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent focus:bg-white transition-all"
+          />
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO CAROUSEL -->
+  <section class="relative overflow-hidden" id="heroCarousel">
+    <div class="flex transition-transform duration-500 ease-out" id="carouselTrack">
+      {bannerSlides.map((slide) => (
+        <div class="min-w-full relative py-16 md:py-24 px-4 bg-center bg-cover" style={`background-image: url(${slide.image});`}>
+          <div class="absolute inset-0 bg-slate-950/55"></div>
+          <div class="relative z-10 max-w-7xl mx-auto text-center text-white">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-3 drop-shadow-lg">{slide.title}</h2>
+            <p class="text-lg md:text-xl opacity-90 mb-6 font-light">{slide.subtitle}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <!-- Carousel Controls -->
+    <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+    <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+    </button>
+    <!-- Dots -->
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+      {bannerSlides.map((_, i) => (
+        <button class={`carousel-dot w-2.5 h-2.5 rounded-full transition-all ${i === 0 ? 'bg-white scale-125' : 'bg-white/50'}`} data-index={i}></button>
+      ))}
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section class="bg-white border-b border-gray-100 md:sticky md:top-[57px] z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar md:justify-center md:overflow-visible" id="categoryFilter">
+        {categories.map((cat, i) => (
+          <button
+            class={`category-btn flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all ${i === 0 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+            data-category={cat.id}
+          >
+            <span set:html={cat.icon} />
+            {cat.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="py-10 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900">Nuestros Productos</h2>
+          <p class="text-gray-500 mt-1">Envíos directos a Camagüey, Cuba</p>
+        </div>
+        <span id="productCount" class="text-sm text-gray-400 bg-gray-100 px-3 py-1 rounded-full font-medium"></span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5" id="productsGrid">
+        {products.map((product) => (
+          <article
+            class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-1 group"
+            data-category={product.category}
+            data-top={product.top ? 'true' : 'false'}
+            data-name={product.name.toLowerCase()}
+          >
+            <div class="relative overflow-hidden">
+              <img
+                src={product.image}
+                alt={product.name}
+                class="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              {product.top && (
+                <span class="absolute top-3 left-3 bg-amber-400 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                  TOP
+                </span>
+              )}
+              <div class="absolute top-3 right-3 bg-emerald-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
+                ${product.price.toFixed(2)}
+              </div>
+            </div>
+
+            <div class="p-4">
+              <h3 class="font-bold text-gray-900 text-base mb-1 group-hover:text-emerald-600 transition-colors">{product.name}</h3>
+              <p class="text-gray-500 text-sm leading-relaxed mb-4">{product.description}</p>
+
+              <a
+                href={`${whatsappBase}?text=${encodeURIComponent(`¡Hola! Me interesa comprar: ${product.name} ($${product.price.toFixed(2)}). ¿Está disponible?`)}`}
+                target="_blank"
+                rel="noopener"
+                class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Comprar
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- No results -->
+      <div id="noResults" class="hidden text-center py-16">
+        <div class="text-6xl mb-4">🔍</div>
+        <h3 class="text-xl font-bold text-gray-700 mb-2">No se encontraron productos</h3>
+        <p class="text-gray-500">Intenta con otra búsqueda o categoría</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="bg-white py-16 px-4 border-t border-gray-100">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Testimonios</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2">Lo que dicen nuestros clientes</h2>
+        <p class="text-gray-500 mt-2 max-w-lg mx-auto">Miles de familias confían en Market Zelle para enviar productos a sus seres queridos en Camagüey</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {testimonials.map((t) => (
+          <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 hover:border-emerald-200 transition-colors">
+            <div class="flex gap-0.5 mb-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <svg class={`w-4 h-4 ${i < t.rating ? 'text-amber-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+              ))}
+            </div>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4 italic">"{t.text}"</p>
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
+                <span class="text-emerald-700 font-bold text-sm">{t.name.charAt(0)}</span>
+              </div>
+              <span class="font-semibold text-gray-800 text-sm">{t.name}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+      <!-- Main Footer Content -->
+      <div class="mb-12 pb-12 border-b border-gray-800">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <!-- Logo & Info -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-10 h-10 rounded-xl overflow-hidden bg-white flex items-center justify-center">
+                <img src="/Productos/logo.jpg" alt="Logo de Market Zelle" class="w-full h-full object-cover" />
+              </div>
+              <h3 class="text-xl font-extrabold">Market<span class="text-emerald-400">Zelle</span></h3>
+            </div>
+            <p class="text-gray-400 text-sm max-w-sm">Conectamos familias. Compra desde EE.UU. y entregamos directamente en Camagüey, Cuba.</p>
+          </div>
+
+          <!-- FAQ Accordions -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 text-emerald-400">Preguntas Frecuentes</h4>
+            <div class="space-y-2" id="faqAccordion">
+              <!-- FAQ 1 -->
+              <button class="faq-btn w-full text-left bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors flex items-center justify-between" data-target="faq-1">
+                <span class="font-semibold text-sm">¿Cuánto demora la entrega?</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+              <div class="faq-content hidden bg-gray-800 p-3 rounded-lg text-sm text-gray-300" id="faq-1">
+                Nuestros envíos se realizan en <span class="text-emerald-400 font-semibold">menos de 24 horas</span> desde que se confirma el pedido.
+              </div>
+
+              <!-- FAQ 2 -->
+              <button class="faq-btn w-full text-left bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors flex items-center justify-between" data-target="faq-2">
+                <span class="font-semibold text-sm">¿Cómo es el pago?</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+              <div class="faq-content hidden bg-gray-800 p-3 rounded-lg text-sm text-gray-300" id="faq-2">
+                El pago se realiza <span class="text-blue-400 font-semibold">al momento de la entrega</span>. Sin pagos por adelantado.
+              </div>
+
+              <!-- FAQ 3 -->
+              <button class="faq-btn w-full text-left bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors flex items-center justify-between" data-target="faq-3">
+                <span class="font-semibold text-sm">¿Solo atienden Camagüey?</span>
+                <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+              <div class="faq-content hidden bg-gray-800 p-3 rounded-lg text-sm text-gray-300" id="faq-3">
+                Sí, en este momento <span class="text-amber-400 font-semibold">solo atendemos Camagüey</span>. Nos enfocamos en ofrecer excelencia local.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-gray-500">
+        <p>&copy; {new Date().getFullYear()} Market Zelle. Todos los derechos reservados.</p>
+        <p> <span class="text-emerald-400 font-semibold">Jardiel Vega</span> — Desarrollador Web</p>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <!-- SCRIPTS -->
+  <script>
+    // ===== CAROUSEL =====
+    const track = document.getElementById('carouselTrack') as HTMLElement;
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('prevSlide');
+    const nextBtn = document.getElementById('nextSlide');
+    let currentSlide = 0;
+    const totalSlides = dots.length;
+
+    function goToSlide(index: number) {
+      currentSlide = (index + totalSlides) % totalSlides;
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-white', i === currentSlide);
+        dot.classList.toggle('scale-125', i === currentSlide);
+        dot.classList.toggle('bg-white/50', i !== currentSlide);
+      });
+    }
+
+    prevBtn?.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn?.addEventListener('click', () => goToSlide(currentSlide + 1));
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => goToSlide(Number((dot as HTMLElement).dataset.index)));
+    });
+
+    // Auto-play
+    let autoPlay = setInterval(() => goToSlide(currentSlide + 1), 4000);
+    const carousel = document.getElementById('heroCarousel');
+    carousel?.addEventListener('mouseenter', () => clearInterval(autoPlay));
+    carousel?.addEventListener('mouseleave', () => {
+      autoPlay = setInterval(() => goToSlide(currentSlide + 1), 4000);
+    });
+
+    // ===== CATEGORY FILTER =====
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const productCards = document.querySelectorAll('.product-card') as NodeListOf<HTMLElement>;
+    const productCount = document.getElementById('productCount') as HTMLElement;
+    const noResults = document.getElementById('noResults') as HTMLElement;
+    let activeCategory = 'todos';
+
+    function filterProducts() {
+      const searchTerm = (document.getElementById('searchInput') as HTMLInputElement).value.toLowerCase().trim();
+      let visible = 0;
+
+      productCards.forEach(card => {
+        const cat = card.dataset.category;
+        const isTop = card.dataset.top === 'true';
+        const name = card.dataset.name || '';
+
+        const matchCategory = activeCategory === 'todos' || cat === activeCategory || (activeCategory === 'top' && isTop);
+        const matchSearch = !searchTerm || name.includes(searchTerm);
+
+        if (matchCategory && matchSearch) {
+          card.style.display = '';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      productCount.textContent = `${visible} producto${visible !== 1 ? 's' : ''}`;
+      noResults.classList.toggle('hidden', visible > 0);
+    }
+
+    categoryBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        categoryBtns.forEach(b => {
+          b.classList.remove('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-200');
+          b.classList.add('bg-gray-100', 'text-gray-600');
+        });
+        btn.classList.remove('bg-gray-100', 'text-gray-600');
+        btn.classList.add('bg-emerald-600', 'text-white', 'shadow-md', 'shadow-emerald-200');
+        activeCategory = (btn as HTMLElement).dataset.category || 'todos';
+        filterProducts();
+      });
+    });
+
+    // ===== SEARCH =====
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    searchInput?.addEventListener('input', () => filterProducts());
+
+    // Initial count
+    filterProducts();
+
+    // ===== FAQ ACCORDION =====
+    const faqBtns = document.querySelectorAll('.faq-btn');
+    faqBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = (btn as HTMLElement).dataset.target;
+        const content = document.getElementById(target || '');
+        const isOpen = !content?.classList.contains('hidden');
+
+        // Close all
+        document.querySelectorAll('.faq-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.faq-btn svg').forEach(el => el.classList.remove('rotate-180'));
+
+        // Open clicked
+        if (!isOpen && content) {
+          content.classList.remove('hidden');
+          (btn.querySelector('svg') as SVGElement).classList.add('rotate-180');
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</Layout>

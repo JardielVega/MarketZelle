@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "name": "Aceite (5 pomos)",
+    "price": 20,
+    "category": "alimentos",
+    "top": true,
+    "description": "Aceite vegetal de alta calidad, pack de 5 pomos",
+    "image": "/Productos/aceite.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Libra de Lomo",
+    "price": 4,
+    "category": "alimentos",
+    "top": false,
+    "description": "Corte de carne fresca y de primera calidad",
+    "image": "/Productos/lomo.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Fili de Huevo",
+    "price": 8,
+    "category": "alimentos",
+    "top": false,
+    "description": "Huevos frescos seleccionados",
+    "image": "/Productos/huevo.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Refresco Santa (24u)",
+    "price": 19,
+    "category": "alimentos",
+    "top": true,
+    "description": "Refresco Santa, caja de 24 unidades",
+    "image": "/Productos/refrescosanta.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Malta",
+    "price": 21,
+    "category": "alimentos",
+    "top": true,
+    "description": "Malta Moyoc, caja de 24 unidades",
+    "image": "/Productos/maltamoyoc24.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Papa Prefrita (3.3 kg)",
+    "price": 10,
+    "category": "alimentos",
+    "top": false,
+    "description": "Papas fritas precocidas, listas para servir",
+    "image": "/Productos/pefritas.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Paca de Arroz (10u)",
+    "price": 18,
+    "category": "alimentos",
+    "top": true,
+    "description": "Pack de 10 unidades de arroz de grano largo",
+    "image": "/Productos/arroz.jpg"
+  },
+  {
+    "id": 20,
+    "name": "Salchichas (3 kg)",
+    "price": 11,
+    "category": "alimentos",
+    "top": true,
+    "description": "Salchichas de excelente calidad, paquete de 3 kg",
+    "image": "/Productos/salchichas_3kg.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Paca de Azúcar (10u)",
+    "price": 22,
+    "category": "alimentos",
+    "top": false,
+    "description": "Pack de 10 unidades de azúcar blanca",
+    "image": "/Productos/azucar.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Paca de Frijoles (10u)",
+    "price": 22,
+    "category": "alimentos",
+    "top": false,
+    "description": "Pack de 10 unidades de frijoles de primera calidad",
+    "image": "/Productos/frijol.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Queso Blanco (por libra)",
+    "price": 2,
+    "category": "alimentos",
+    "top": false,
+    "description": "Queso blanco fresco y puro",
+    "image": "/Productos/queso.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Espaguetis (5u)",
+    "price": 4,
+    "category": "alimentos",
+    "top": false,
+    "description": "Pack de 5 unidades de espaguetis de primera calidad",
+    "image": "/Productos/spaguettis.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Saltitacos (7u)",
+    "price": 5,
+    "category": "alimentos",
+    "top": false,
+    "description": "Pack de 7 paquetes de saltitacos",
+    "image": "/Productos/pure.jpg"
+  },
+  {
+    "id": 13,
+    "name": "Cerveza Unlaguer (24u)",
+    "price": 18,
+    "category": "alimentos",
+    "top": true,
+    "description": "Cerveza Unlaguer, caja de 24 unidades",
+    "image": "/Productos/cerveza.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Caja de Jugos (24u)",
+    "price": 18,
+    "category": "alimentos",
+    "top": true,
+    "description": "Caja con 24 unidades de jugos naturales",
+    "image": "/Productos/jugos.jpg"
+  },
+  {
+    "id": 15,
+    "name": "Queso Gouda (3.3 kg)",
+    "price": 30,
+    "category": "alimentos",
+    "top": false,
+    "description": "Queso Gouda importado, pieza completa de 3.3 kg",
+    "image": "/Productos/gouda.jpg"
+  },
+  {
+    "id": 16,
+    "name": "Paquete de Pollo (10 LB)",
+    "price": 16,
+    "category": "alimentos",
+    "top": true,
+    "description": "Pollo fresco seleccionado, paquete de 10 libras",
+    "image": "/Productos/pollo.jpg"
+  },
+  {
+    "id": 17,
+    "name": "Ventilador Recargable F6",
+    "price": 70,
+    "category": "electronicos",
+    "top": true,
+    "description": "Ventilador recargable portátil F6, batería larga duración",
+    "image": "/Productos/F6.jpg"
+  },
+  {
+    "id": 18,
+    "name": "Lámpara Recargable 40W",
+    "price": 10.99,
+    "category": "electronicos",
+    "top": false,
+    "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
+    "image": "/Productos/lampara.jpg"
+  },
+  {
+    "id": 19,
+    "name": "Malta (6u)",
+    "price": 7,
+    "category": "alimentos",
+    "top": false,
+    "description": "Malta Moyoc, caja de 6 unidades",
+    "image": "/Productos/maltamoyoc6.jpg"
+  }
+]
