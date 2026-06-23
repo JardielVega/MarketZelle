@@ -214,5 +214,14 @@
     "description": "Jamón Bravo Barra de 2kg",
     "image": "/Productos/jamn-bravo-1782245722893.webp",
     "top": false
+  },
+  {
+    "id": 25,
+    "name": "Yogurt Natural Xtasis Tropical 4L",
+    "price": 10,
+    "category": "alimentos",
+    "description": "Ingredientes: Agua, leche entera, leche descremada, azúcar refino, cultivos lácteos, saborizantes artificiales, pulpas y frutas naturales.",
+    "image": "/Productos/yogurt-natural-xtasis-tropical-4l-1782246034168.jpeg",
+    "top": false
   }
 ]
