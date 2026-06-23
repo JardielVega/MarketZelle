@@ -196,5 +196,14 @@
     "description": "Bolsa de Pollo entero. ",
     "image": "/Productos/pollo-entero-1782244896518.png",
     "top": true
+  },
+  {
+    "id": 23,
+    "name": "Camaron Entero ",
+    "price": 45,
+    "category": "alimentos",
+    "description": "Camaron entero Vima 2.5kg",
+    "image": "/Productos/camaron-entero--1782245460644.jpeg",
+    "top": false
   }
 ]
