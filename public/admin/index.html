@@ -815,42 +815,76 @@
             try {
                 const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_FILE}`;
 
-                // Obtener SHA del archivo actual - SIN el Accept: raw
-                console.log('Obteniendo SHA del archivo desde:', url);
+                console.log('Paso 1: Obteniendo metadata del archivo');
+                // Obtener metadata del archivo usando el header correcto para obtener info completa
                 const getResponse = await fetch(url, {
                     headers: {
                         'Authorization': `token ${token}`,
-                        'User-Agent': 'Market-Zelle-Admin'
-                        // NO usar Accept header para obtener el metadata
+                        'User-Agent': 'Market-Zelle-Admin',
+                        'Accept': 'application/vnd.github.v3+json'  // Este header devuelve el metadata JSON
                     }
                 });
 
                 if (!getResponse.ok) {
                     const errorBody = await getResponse.text();
-                    console.error('Error obteniendo SHA:', getResponse.status, errorBody);
+                    console.error('Error:', getResponse.status, errorBody);
                     
                     if (getResponse.status === 401) {
-                        throw new Error('Token inválido o sin permisos. Asegúrate de crear un token con permiso "repo"');
+                        throw new Error('Token inválido. Verifica que sea un "Personal Access Token (classic)" con permiso "repo"');
                     }
                     if (getResponse.status === 404) {
-                        throw new Error('Archivo no encontrado en GitHub. Verifica que existe: src/data/products.json');
+                        throw new Error('Archivo no encontrado. Verifica: src/data/products.json');
                     }
-                    throw new Error(`No se pudo obtener el archivo (${getResponse.status})`);
+                    throw new Error(`Error ${getResponse.status}`);
                 }
 
-                const fileData = await getResponse.json();
-                console.log('Respuesta de GitHub:', fileData);
-                
-                if (!fileData.sha) {
-                    console.error('fileData:', fileData);
-                    throw new Error('No se pudo obtener el SHA del archivo. Verifica que el archivo existe en GitHub.');
+                const response = await getResponse.json();
+                console.log('Respuesta completa de GitHub:', response);
+
+                // Detectar si es el metadata o el contenido
+                let sha;
+                if (response.sha) {
+                    // Es el metadata
+                    sha = response.sha;
+                    console.log('SHA obtenido del metadata:', sha.substring(0, 8) + '...');
+                } else if (Array.isArray(response)) {
+                    // Es el contenido directo, necesitamos obtener el SHA de otra forma
+                    console.warn('Se obtuvo contenido en lugar de metadata. Intentando obtener SHA...');
+                    
+                    // Hacer un request con Accept: application/vnd.github.v3.raw para obtener solo el contenido
+                    // y luego usar git/trees para obtener el SHA
+                    const treeUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1`;
+                    const treeResponse = await fetch(treeUrl, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'User-Agent': 'Market-Zelle-Admin'
+                        }
+                    });
+
+                    if (treeResponse.ok) {
+                        const treeData = await treeResponse.json();
+                        const file = treeData.tree.find(f => f.path === PRODUCTS_FILE);
+                        if (file) {
+                            sha = file.sha;
+                            console.log('SHA obtenido del árbol:', sha.substring(0, 8) + '...');
+                        }
+                    }
+
+                    if (!sha) {
+                        throw new Error('No se pudo obtener el SHA del archivo. Intenta más tarde.');
+                    }
+                } else {
+                    throw new Error('Respuesta inesperada de GitHub: ' + JSON.stringify(response).substring(0, 100));
                 }
 
-                console.log('SHA obtenido:', fileData.sha.substring(0, 8) + '...');
-                console.log('Guardando productos...');
+                if (!sha) {
+                    throw new Error('SHA vacío. No se puede actualizar el archivo.');
+                }
+
+                console.log('Paso 2: Guardando productos con SHA:', sha.substring(0, 8) + '...');
 
                 // Actualizar archivo
-                const response = await fetch(url, {
+                const updateResponse = await fetch(url, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${token}`,
@@ -860,20 +894,20 @@
                     body: JSON.stringify({
                         message: 'Actualizar productos desde panel de administración',
                         content: btoa(JSON.stringify(currentProducts, null, 2)),
-                        sha: fileData.sha
+                        sha: sha
                     })
                 });
 
-                if (!response.ok) {
-                    const errorBody = await response.json();
-                    console.error('Error guardando:', response.status, errorBody);
-                    throw new Error(`Error al actualizar (${response.status}): ${errorBody.message || JSON.stringify(errorBody)}`);
+                if (!updateResponse.ok) {
+                    const errorBody = await updateResponse.json();
+                    console.error('Error guardando:', updateResponse.status, errorBody);
+                    throw new Error(`Error ${updateResponse.status}: ${errorBody.message}`);
                 }
 
-                console.log('✅ Productos guardados exitosamente');
+                console.log('✅ Guardado exitoso');
                 alert('✅ Productos guardados correctamente.\n\nEl sitio se actualizará en 1-2 minutos.');
             } catch (error) {
-                console.error('Error guardando:', error);
+                console.error('❌ Error:', error);
                 alert('❌ Error al guardar:\n\n' + error.message);
             }
         }
