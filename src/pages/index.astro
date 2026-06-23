@@ -547,13 +547,15 @@ const bannerSlides = [
             <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded" />
             <div class="flex-1">
               <div class="font-semibold text-sm">${item.name}</div>
-              <div class="text-xs text-gray-500 mt-1">${formatMoney(item.price)} x ${item.qty} = <strong>${formatMoney(item.price * item.qty)}</strong></div>\n              <div class="mt-2 flex gap-1">
+              <div class="text-xs text-gray-500 mt-1">${formatMoney(item.price)} x ${item.qty} = <strong>${formatMoney(item.price * item.qty)}</strong></div>
+              <div class="mt-2 flex gap-1">
                 <button class="qty-btn text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-100" data-action="dec" data-id="${item.id}">−</button>
                 <button class="qty-btn text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-100" data-action="inc" data-id="${item.id}">+</button>
                 <button class="remove-btn text-xs px-2 py-1 text-red-600 hover:text-red-800" data-id="${item.id}">Eliminar</button>
               </div>
             </div>
-          `;\n          container.appendChild(el);
+          `;
+          container.appendChild(el);
         });
       }
 
