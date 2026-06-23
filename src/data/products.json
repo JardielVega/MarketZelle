@@ -20,11 +20,11 @@
   {
     "id": 3,
     "name": "Fili de Huevo",
-    "price": 11,
+    "price": 8,
     "category": "alimentos",
     "description": "Huevos frescos seleccionados",
     "image": "/Productos/huevo.jpg",
-    "top": false
+    "top": true
   },
   {
     "id": 4,
