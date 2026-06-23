@@ -783,6 +783,12 @@
                 const getResponse = await fetch(url, {
                     headers: { 'Authorization': `token ${token}` }
                 });
+
+                if (!getResponse.ok) {
+                    const errorData = await getResponse.json();
+                    throw new Error(`No se pudo obtener el archivo (${getResponse.status}): ${errorData.message || 'Error desconocido'}`);
+                }
+
                 const fileData = await getResponse.json();
 
                 // Actualizar archivo
@@ -800,13 +806,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Error al guardar');
+                    const errorData = await response.json();
+                    throw new Error(`Error al actualizar (${response.status}): ${errorData.message || 'Error desconocido'}`);
                 }
 
                 alert('✅ Productos guardados correctamente.\n\nEl sitio se actualizará en 1-2 minutos.');
             } catch (error) {
                 console.error('Error guardando:', error);
-                alert('Error al guardar: ' + error.message);
+                alert('Error al guardar:\n\n' + error.message);
             }
         }
 
