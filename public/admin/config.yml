@@ -62,12 +62,6 @@ collections:
                 hint: "Selecciona la categoría principal del producto"
                 required: true
               
-              - label: "Etiqueta/Tag"
-                name: "tag"
-                widget: "string"
-                hint: "Etiqueta corta para el producto (ej: Frescos, Premium, Promoción)"
-                required: false
-              
               - label: "¿Destacado (Más vendido)?"
                 name: "top"
                 widget: "boolean"
