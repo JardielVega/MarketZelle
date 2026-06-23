@@ -137,11 +137,11 @@
   {
     "id": 15,
     "name": "Queso Gouda (3.3 kg)",
-    "price": 30,
+    "price": 35,
     "category": "alimentos",
-    "top": false,
     "description": "Queso Gouda importado, pieza completa de 3.3 kg",
-    "image": "/Productos/gouda.jpg"
+    "image": "/Productos/gouda.jpg",
+    "top": false
   },
   {
     "id": 16,
