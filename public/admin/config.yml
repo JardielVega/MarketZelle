@@ -1,6 +1,6 @@
 backend:
   name: git-gateway
-  branch: main # Asegúrate de que tu rama principal sea 'main'
+  branch: main
 
 media_folder: "public/Productos" 
 public_folder: "/Productos"
@@ -8,18 +8,20 @@ public_folder: "/Productos"
 collections:
   - name: "productos"
     label: "Gestión de Productos"
-    file: "src/data/products.json"
-    allow_add: true
-    fields:
-      - label: "Todos los Productos"
-        name: "products"
-        widget: "list"
-        summary: '{{fields.name}} - ${{fields.price}}'
+    files:
+      - name: "productos-list"
+        label: "Todos los Productos"
+        file: "src/data/products.json"
         fields:
-          - {label: "ID (Número único)", name: "id", widget: "number"}
-          - {label: "Nombre del Producto", name: "name", widget: "string"}
-          - {label: "Precio ($USD)", name: "price", widget: "number", value_type: "int"}
-          - {label: "Categoría", name: "category", widget: "select", options: ["alimentos", "electronicos", "aseo"]}
-          - {label: "Destacado (Top)", name: "top", widget: "boolean", default: false}
-          - {label: "Descripción Corta", name: "description", widget: "text"}
-          - {label: "Imagen", name: "image", widget: "image"}
+          - label: "Productos"
+            name: "products"
+            widget: "list"
+            summary: '{{fields.name}} - ${{fields.price}}'
+            fields:
+              - {label: "ID", name: "id", widget: "number"}
+              - {label: "Nombre", name: "name", widget: "string"}
+              - {label: "Precio ($USD)", name: "price", widget: "number", value_type: "int"}
+              - {label: "Categoría", name: "category", widget: "select", options: ["alimentos", "electronicos", "aseo"]}
+              - {label: "Destacado (Top)", name: "top", widget: "boolean", default: false}
+              - {label: "Descripción", name: "description", widget: "text"}
+              - {label: "Imagen", name: "image", widget: "image"}
