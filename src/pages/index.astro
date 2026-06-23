@@ -653,6 +653,10 @@ const bannerSlides = [
 
       const checkoutBtn = document.getElementById('checkoutBtn');
       if (checkoutBtn) checkoutBtn.addEventListener('click', () => {
+        if (!cart.length) {
+          alert('Tu carrito está vacío. Añade productos para continuar.');
+          return;
+        }
         openCheckout();
       });
 
