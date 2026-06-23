@@ -205,5 +205,14 @@
     "description": "Camaron entero Vima 2.5kg",
     "image": "/Productos/camaron-entero--1782245460644.jpeg",
     "top": false
+  },
+  {
+    "id": 24,
+    "name": "Jamón Bravo",
+    "price": 20,
+    "category": "alimentos",
+    "description": "Jamón Bravo Barra de 2kg",
+    "image": "/Productos/jamn-bravo-1782245722893.webp",
+    "top": false
   }
 ]
