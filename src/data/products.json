@@ -49,9 +49,9 @@
     "name": "Papa Prefrita (3.3 kg)",
     "price": 10,
     "category": "alimentos",
-    "top": false,
     "description": "Papas fritas precocidas, listas para servir",
-    "image": "/Productos/pefritas.jpg"
+    "image": "/Productos/pefritas.jpg",
+    "top": true
   },
   {
     "id": 7,
