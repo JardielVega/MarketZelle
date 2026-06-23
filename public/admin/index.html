@@ -815,13 +815,13 @@
             try {
                 const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_FILE}`;
 
-                // Obtener SHA del archivo actual
+                // Obtener SHA del archivo actual - SIN el Accept: raw
                 console.log('Obteniendo SHA del archivo desde:', url);
                 const getResponse = await fetch(url, {
                     headers: {
                         'Authorization': `token ${token}`,
-                        'User-Agent': 'Market-Zelle-Admin',
-                        'Accept': 'application/vnd.github.v3+json'
+                        'User-Agent': 'Market-Zelle-Admin'
+                        // NO usar Accept header para obtener el metadata
                     }
                 });
 
@@ -839,13 +839,15 @@
                 }
 
                 const fileData = await getResponse.json();
-                console.log('SHA obtenido:', fileData.sha ? 'OK' : 'FALTA SHA', fileData);
+                console.log('Respuesta de GitHub:', fileData);
                 
                 if (!fileData.sha) {
-                    throw new Error('No se pudo obtener el SHA del archivo. Respuesta: ' + JSON.stringify(fileData));
+                    console.error('fileData:', fileData);
+                    throw new Error('No se pudo obtener el SHA del archivo. Verifica que el archivo existe en GitHub.');
                 }
 
-                console.log('Guardando productos con SHA:', fileData.sha.substring(0, 8) + '...');
+                console.log('SHA obtenido:', fileData.sha.substring(0, 8) + '...');
+                console.log('Guardando productos...');
 
                 // Actualizar archivo
                 const response = await fetch(url, {
