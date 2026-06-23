@@ -51,7 +51,7 @@
     "category": "alimentos",
     "description": "Papas fritas precocidas, listas para servir",
     "image": "/Productos/pefritas.jpg",
-    "top": true
+    "top": false
   },
   {
     "id": 7,
