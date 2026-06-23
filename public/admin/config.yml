@@ -1,27 +1,94 @@
 backend:
   name: git-gateway
   branch: main
+  squash_merges: true
+  commit_message: "Actualizar productos desde panel de administración - {{date}}"
 
-media_folder: "public/Productos" 
+media_folder: "public/Productos"
 public_folder: "/Productos"
+media_library:
+  max_file_size: 10000000
 
 collections:
   - name: "productos"
-    label: "Gestión de Productos"
+    label: "📦 Gestión de Productos"
+    description: "Administra todos los productos de Market Zelle"
+    folder: "src/data"
+    create: false
     files:
       - name: "productos-list"
         label: "Todos los Productos"
         file: "src/data/products.json"
+        description: "Lista completa de productos disponibles"
         fields:
           - label: "Productos"
             name: "products"
             widget: "list"
-            summary: '{{fields.name}} - ${{fields.price}}'
+            summary: "{{fields.name}} - ${{fields.price}} USD"
+            allow_add: true
+            collapsed: false
             fields:
-              - {label: "ID", name: "id", widget: "number"}
-              - {label: "Nombre", name: "name", widget: "string"}
-              - {label: "Precio ($USD)", name: "price", widget: "number", value_type: "int"}
-              - {label: "Categoría", name: "category", widget: "select", options: ["alimentos", "electronicos", "aseo"]}
-              - {label: "Destacado (Top)", name: "top", widget: "boolean", default: false}
-              - {label: "Descripción", name: "description", widget: "text"}
-              - {label: "Imagen", name: "image", widget: "image"}
+              - label: "ID del Producto"
+                name: "id"
+                widget: "number"
+                hint: "Número único para el producto"
+                required: true
+              
+              - label: "Nombre del Producto"
+                name: "name"
+                widget: "string"
+                hint: "Nombre descriptivo del producto (ej: Aceite 5 pomos)"
+                required: true
+              
+              - label: "Precio (USD)"
+                name: "price"
+                widget: "number"
+                value_type: "int"
+                min: 1
+                step: 1
+                hint: "Precio en dólares USD"
+                required: true
+              
+              - label: "Categoría"
+                name: "category"
+                widget: "select"
+                options:
+                  - label: "🥘 Alimentos"
+                    value: "alimentos"
+                  - label: "💻 Electrónicos"
+                    value: "electronicos"
+                  - label: "🧼 Aseo"
+                    value: "aseo"
+                hint: "Selecciona la categoría principal del producto"
+                required: true
+              
+              - label: "Etiqueta/Tag"
+                name: "tag"
+                widget: "string"
+                hint: "Etiqueta corta para el producto (ej: Frescos, Premium, Promoción)"
+                required: false
+              
+              - label: "¿Destacado (Más vendido)?"
+                name: "top"
+                widget: "boolean"
+                default: false
+                hint: "Activar para mostrar este producto en la sección de Más Vendidos"
+              
+              - label: "Descripción"
+                name: "description"
+                widget: "text"
+                hint: "Descripción breve del producto (máx 150 caracteres)"
+                required: true
+                pattern:
+                  - '^.{1,150}$'
+                  - "La descripción debe tener entre 1 y 150 caracteres"
+              
+              - label: "Imagen del Producto"
+                name: "image"
+                widget: "image"
+                hint: "Sube una imagen clara del producto (JPG, PNG)"
+                required: true
+                allow_multiple: false
+                media_library:
+                  config:
+                    max_file_size: 5000000

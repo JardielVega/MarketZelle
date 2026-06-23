@@ -4,6 +4,7 @@
     "name": "Aceite (5 pomos)",
     "price": 20,
     "category": "alimentos",
+    "tag": "Favorito",
     "top": true,
     "description": "Aceite vegetal de alta calidad, pack de 5 pomos",
     "image": "/Productos/aceite.jpg"
@@ -13,6 +14,7 @@
     "name": "Libra de Lomo",
     "price": 4,
     "category": "alimentos",
+    "tag": "Carnes",
     "top": false,
     "description": "Corte de carne fresca y de primera calidad",
     "image": "/Productos/lomo.jpg"
@@ -22,6 +24,7 @@
     "name": "Fili de Huevo",
     "price": 8,
     "category": "alimentos",
+    "tag": "Frescos",
     "top": false,
     "description": "Huevos frescos seleccionados",
     "image": "/Productos/huevo.jpg"
@@ -31,6 +34,7 @@
     "name": "Refresco Santa (24u)",
     "price": 19,
     "category": "alimentos",
+    "tag": "Bebidas",
     "top": true,
     "description": "Refresco Santa, caja de 24 unidades",
     "image": "/Productos/refrescosanta.jpg"
@@ -40,6 +44,7 @@
     "name": "Malta",
     "price": 21,
     "category": "alimentos",
+    "tag": "Bebidas",
     "top": true,
     "description": "Malta Moyoc, caja de 24 unidades",
     "image": "/Productos/maltamoyoc24.jpg"
@@ -49,6 +54,7 @@
     "name": "Papa Prefrita (3.3 kg)",
     "price": 10,
     "category": "alimentos",
+    "tag": "Snacks",
     "top": false,
     "description": "Papas fritas precocidas, listas para servir",
     "image": "/Productos/pefritas.jpg"
@@ -58,6 +64,7 @@
     "name": "Paca de Arroz (10u)",
     "price": 18,
     "category": "alimentos",
+    "tag": "Granos",
     "top": true,
     "description": "Pack de 10 unidades de arroz de grano largo",
     "image": "/Productos/arroz.jpg"
@@ -67,6 +74,7 @@
     "name": "Salchichas (3 kg)",
     "price": 11,
     "category": "alimentos",
+    "tag": "Carnes",
     "top": true,
     "description": "Salchichas de excelente calidad, paquete de 3 kg",
     "image": "/Productos/salchichas_3kg.jpg"
@@ -76,6 +84,7 @@
     "name": "Paca de Azúcar (10u)",
     "price": 22,
     "category": "alimentos",
+    "tag": "Endulzantes",
     "top": false,
     "description": "Pack de 10 unidades de azúcar blanca",
     "image": "/Productos/azucar.jpg"
@@ -85,6 +94,7 @@
     "name": "Paca de Frijoles (10u)",
     "price": 22,
     "category": "alimentos",
+    "tag": "Granos",
     "top": false,
     "description": "Pack de 10 unidades de frijoles de primera calidad",
     "image": "/Productos/frijol.jpg"
@@ -94,6 +104,7 @@
     "name": "Queso Blanco (por libra)",
     "price": 2,
     "category": "alimentos",
+    "tag": "Lácteos",
     "top": false,
     "description": "Queso blanco fresco y puro",
     "image": "/Productos/queso.jpg"
@@ -103,6 +114,7 @@
     "name": "Espaguetis (5u)",
     "price": 4,
     "category": "alimentos",
+    "tag": "Pasta",
     "top": false,
     "description": "Pack de 5 unidades de espaguetis de primera calidad",
     "image": "/Productos/spaguettis.jpg"
@@ -112,6 +124,7 @@
     "name": "Saltitacos (7u)",
     "price": 5,
     "category": "alimentos",
+    "tag": "Snacks",
     "top": false,
     "description": "Pack de 7 paquetes de saltitacos",
     "image": "/Productos/pure.jpg"
@@ -121,6 +134,7 @@
     "name": "Cerveza Unlaguer (24u)",
     "price": 18,
     "category": "alimentos",
+    "tag": "Bebidas",
     "top": true,
     "description": "Cerveza Unlaguer, caja de 24 unidades",
     "image": "/Productos/cerveza.jpg"
@@ -130,6 +144,7 @@
     "name": "Caja de Jugos (24u)",
     "price": 18,
     "category": "alimentos",
+    "tag": "Bebidas",
     "top": true,
     "description": "Caja con 24 unidades de jugos naturales",
     "image": "/Productos/jugos.jpg"
@@ -139,6 +154,7 @@
     "name": "Queso Gouda (3.3 kg)",
     "price": 30,
     "category": "alimentos",
+    "tag": "Lácteos",
     "top": false,
     "description": "Queso Gouda importado, pieza completa de 3.3 kg",
     "image": "/Productos/gouda.jpg"
@@ -148,6 +164,7 @@
     "name": "Paquete de Pollo (10 LB)",
     "price": 16,
     "category": "alimentos",
+    "tag": "Carnes",
     "top": true,
     "description": "Pollo fresco seleccionado, paquete de 10 libras",
     "image": "/Productos/pollo.jpg"
@@ -157,6 +174,7 @@
     "name": "Ventilador Recargable F6",
     "price": 70,
     "category": "electronicos",
+    "tag": "Electrónicos",
     "top": true,
     "description": "Ventilador recargable portátil F6, batería larga duración",
     "image": "/Productos/F6.jpg"
@@ -166,6 +184,7 @@
     "name": "Lámpara Recargable 40W",
     "price": 10.99,
     "category": "electronicos",
+    "tag": "Electrónicos",
     "top": false,
     "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
     "image": "/Productos/lampara.jpg"
@@ -175,6 +194,7 @@
     "name": "Malta (6u)",
     "price": 7,
     "category": "alimentos",
+    "tag": "Bebidas",
     "top": false,
     "description": "Malta Moyoc, caja de 6 unidades",
     "image": "/Productos/maltamoyoc6.jpg"

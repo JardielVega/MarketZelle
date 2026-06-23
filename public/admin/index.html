@@ -1,14 +1,73 @@
 <!doctype html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Panel de Administración - Market Zelle</title>
-  <!-- Script de Netlify Identity para el inicio de sesión -->
+  <meta name="description" content="Panel de administración de Market Zelle para gestionar productos" />
+  
+  <!-- Netlify Identity para autenticación -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 18px;
+      z-index: 9999;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <!-- Script de Decap CMS -->
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Cargando panel de administración...</p>
+  </div>
+  
+  <!-- Script de Decap CMS (antes Netlify CMS) -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
+  <script>
+    // Redirigir al login de Netlify si no está autenticado
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', user => {
+        if (!user) {
+          window.netlifyIdentity.open();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
