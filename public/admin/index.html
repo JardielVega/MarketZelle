@@ -410,16 +410,6 @@
                 </div>
                 <button type="submit">🔐 Iniciar Sesión</button>
             </form>
-
-            <div class="note" style="margin-top: 25px; text-align: left;">
-                <strong>👉 Pasos para obtener tu token:</strong><br>
-                1. Ve a <a href="https://github.com/settings/tokens" target="_blank" style="color: #10b981;">github.com/settings/tokens</a><br>
-                2. Haz clic en "Generate new token (classic)"<br>
-                3. Nombre: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">Market Zelle Admin</code><br>
-                4. Permisos: Marca <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">repo</code><br>
-                5. Copia el token y pégalo arriba<br>
-                <small style="display: block; margin-top: 8px;">⚠️ El token solo se muestra una vez. Guárdalo en un lugar seguro.</small>
-            </div>
         </div>
     </div>
 
@@ -566,7 +556,7 @@
                 });
 
                 if (response.status === 401) {
-                    alert('❌ Token inválido.\n\nVerifica que:\n1. El token sea correcto\n2. No esté expirado\n3. Sea un "Personal Access Token (classic)"\n4. Tenga el permiso "repo" marcado');
+                    alert('❌ Token inválido o expirado.');
                     return;
                 }
 
@@ -585,7 +575,7 @@
                 loadProducts();
             } catch (error) {
                 console.error('Error validando token:', error);
-                alert('❌ Error al validar token:\n\n' + error.message + '\n\nAsegúrate de:\n- Tener conexión a internet\n- El token sea válido\n- Sea un "Personal Access Token (classic)"\n- Tenga permiso "repo"');
+                alert('❌ Error al validar token: ' + error.message);
             }
         }
 
@@ -830,10 +820,10 @@
                     console.error('Error:', getResponse.status, errorBody);
                     
                     if (getResponse.status === 401) {
-                        throw new Error('Token inválido. Verifica que sea un "Personal Access Token (classic)" con permiso "repo"');
+                        throw new Error('Token inválido o sin permisos');
                     }
                     if (getResponse.status === 404) {
-                        throw new Error('Archivo no encontrado. Verifica: src/data/products.json');
+                        throw new Error('Archivo no encontrado en el repositorio');
                     }
                     throw new Error(`Error ${getResponse.status}`);
                 }
