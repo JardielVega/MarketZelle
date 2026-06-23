@@ -157,9 +157,9 @@
     "name": "Ventilador Recargable F6",
     "price": 70,
     "category": "electronicos",
-    "top": true,
     "description": "Ventilador recargable portátil F6, batería larga duración",
-    "image": "/Productos/F6.jpg"
+    "image": "/Productos/F6.jpg",
+    "top": false
   },
   {
     "id": 18,
