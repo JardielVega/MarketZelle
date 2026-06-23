@@ -305,8 +305,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="productImage">URL de la Imagen *</label>
-                    <input type="text" id="productImage" placeholder="Ej: /Productos/aceite.jpg" required>
+                    <label for="productImage">Imagen del Producto *</label>
+                    <div style="margin-bottom: 10px;">
+                        <input type="file" id="imageFile" accept="image/*" onchange="previewImage(event)">
+                        <small style="color: #666; display: block; margin-top: 5px;">Sube una imagen (JPG, PNG) o ingresa la URL manualmente</small>
+                    </div>
+                    <img id="imagePreview" style="width: 100%; max-width: 300px; border-radius: 6px; margin-bottom: 10px; display: none;">
+                    <input type="text" id="productImage" placeholder="/Productos/nombre-producto.jpg" required>
                 </div>
 
                 <div class="form-group checkbox-group">
@@ -450,11 +455,97 @@
 
         function closeProductModal() {
             document.getElementById('productModal').classList.remove('active');
+            document.getElementById('imageFile').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
             editingProductIndex = -1;
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        async function uploadImageToGitHub(file) {
+            const token = localStorage.getItem(TOKEN_KEY);
+            if (!token) {
+                alert('Token no disponible');
+                return null;
+            }
+
+            try {
+                // Generar nombre de archivo basado en el nombre del producto
+                const productName = document.getElementById('productName').value
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]/g, '');
+                
+                const extension = file.name.split('.').pop();
+                const fileName = `${productName}-${Date.now()}.${extension}`;
+                const filePath = `public/Productos/${fileName}`;
+
+                // Leer archivo como base64
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(file);
+                });
+
+                // Subir a GitHub
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Agregar imagen del producto: ${fileName}`,
+                        content: base64
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                // Retornar la ruta relativa
+                const imagePath = `/Productos/${fileName}`;
+                document.getElementById('productImage').value = imagePath;
+                alert(`✅ Imagen subida: ${imagePath}`);
+                return imagePath;
+
+            } catch (error) {
+                console.error('Error subiendo imagen:', error);
+                alert('Error al subir imagen: ' + error.message);
+                return null;
+            }
         }
 
         async function saveProduct(event) {
             event.preventDefault();
+
+            // Si hay archivo de imagen, subirlo primero
+            const imageFile = document.getElementById('imageFile').files[0];
+            let imagePath = document.getElementById('productImage').value;
+
+            if (imageFile) {
+                imagePath = await uploadImageToGitHub(imageFile);
+                if (!imagePath) {
+                    alert('Error al subir la imagen. Por favor, intenta de nuevo.');
+                    return;
+                }
+            }
 
             const product = {
                 id: parseInt(document.getElementById('productId').value),
@@ -462,7 +553,7 @@
                 price: parseFloat(document.getElementById('productPrice').value),
                 category: document.getElementById('productCategory').value,
                 description: document.getElementById('productDescription').value,
-                image: document.getElementById('productImage').value,
+                image: imagePath,
                 top: document.getElementById('productTop').checked
             };
 
