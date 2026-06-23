@@ -20,11 +20,11 @@
   {
     "id": 3,
     "name": "Fili de Huevo",
-    "price": 8,
+    "price": 11,
     "category": "alimentos",
-    "top": false,
     "description": "Huevos frescos seleccionados",
-    "image": "/Productos/huevo.jpg"
+    "image": "/Productos/huevo.jpg",
+    "top": false
   },
   {
     "id": 4,
@@ -73,11 +73,11 @@
   },
   {
     "id": 8,
-    "name": "Paca de AzÃºcar (10u)",
+    "name": "Paca de Azúcar (10u)",
     "price": 22,
     "category": "alimentos",
     "top": false,
-    "description": "Pack de 10 unidades de azÃºcar blanca",
+    "description": "Pack de 10 unidades de azúcar blanca",
     "image": "/Productos/azucar.jpg"
   },
   {
@@ -158,16 +158,16 @@
     "price": 70,
     "category": "electronicos",
     "top": true,
-    "description": "Ventilador recargable portÃ¡til F6, baterÃ­a larga duraciÃ³n",
+    "description": "Ventilador recargable portátil F6, batería larga duración",
     "image": "/Productos/F6.jpg"
   },
   {
     "id": 18,
-    "name": "LÃ¡mpara Recargable 40W",
+    "name": "Lámpara Recargable 40W",
     "price": 10.99,
     "category": "electronicos",
     "top": false,
-    "description": "LÃ¡mpara recargable de 40 Watts, luz potente y duradera",
+    "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
     "image": "/Productos/lampara.jpg"
   },
   {
