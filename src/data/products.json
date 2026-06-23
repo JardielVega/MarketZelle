@@ -178,5 +178,14 @@
     "top": false,
     "description": "Malta Moyoc, caja de 6 unidades",
     "image": "/Productos/maltamoyoc6.jpg"
+  },
+  {
+    "id": 21,
+    "name": "Café Vima",
+    "price": 8,
+    "category": "alimentos",
+    "description": "Café Vima, paquete sellado de 250g",
+    "image": "/Productos/caf-vima-1782244444504.webp",
+    "top": false
   }
 ]
