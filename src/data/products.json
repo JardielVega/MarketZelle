@@ -187,5 +187,14 @@
     "description": "Café Vima, paquete sellado de 250g",
     "image": "/Productos/caf-vima-1782244588493.webp",
     "top": false
+  },
+  {
+    "id": 22,
+    "name": "Pollo Entero",
+    "price": 20,
+    "category": "alimentos",
+    "description": "Bolsa de Pollo entero. ",
+    "image": "/Productos/pollo-entero-1782244896518.png",
+    "top": true
   }
 ]
