@@ -121,9 +121,9 @@
     "name": "Cerveza Unlaguer (24u)",
     "price": 18,
     "category": "alimentos",
-    "top": true,
     "description": "Cerveza Unlaguer, caja de 24 unidades",
-    "image": "/Productos/cerveza.jpg"
+    "image": "/Productos/cerveza.jpg",
+    "top": false
   },
   {
     "id": 14,
