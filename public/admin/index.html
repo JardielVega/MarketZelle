@@ -401,25 +401,24 @@
             </div>
             
             <h2>Acceso Seguro</h2>
-            <p>Ingresa tus credenciales para administrar productos</p>
+            <p>Autentica con tu token de GitHub</p>
 
-            <form class="login-form" onsubmit="handleLogin(event)">
+            <form class="login-form" onsubmit="requestToken(event)">
                 <div class="form-group">
-                    <label for="loginUser">👤 Usuario</label>
-                    <input type="text" id="loginUser" placeholder="ej: admin" required>
+                    <label for="githubToken">🔑 GitHub Personal Access Token</label>
+                    <input type="password" id="githubToken" placeholder="Pega tu token aquí" required>
                 </div>
-                <div class="form-group">
-                    <label for="loginPass">🔐 Contraseña</label>
-                    <input type="password" id="loginPass" placeholder="Ingresa tu contraseña" required>
-                </div>
-                <button type="submit">Iniciar Sesión</button>
+                <button type="submit">🔐 Iniciar Sesión</button>
             </form>
 
             <div class="note" style="margin-top: 25px; text-align: left;">
-                <strong>👉 Por defecto:</strong><br>
-                Usuario: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">admin</code><br>
-                Contraseña: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">zelle2024</code><br>
-                <small style="display: block; margin-top: 8px;">⚠️ Cambia la contraseña después del primer acceso.</small>
+                <strong>👉 Pasos para obtener tu token:</strong><br>
+                1. Ve a <a href="https://github.com/settings/tokens" target="_blank" style="color: #10b981;">github.com/settings/tokens</a><br>
+                2. Haz clic en "Generate new token (classic)"<br>
+                3. Nombre: <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">Market Zelle Admin</code><br>
+                4. Permisos: Marca <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">repo</code><br>
+                5. Copia el token y pégalo arriba<br>
+                <small style="display: block; margin-top: 8px;">⚠️ El token solo se muestra una vez. Guárdalo en un lugar seguro.</small>
             </div>
         </div>
     </div>
@@ -514,15 +513,9 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE CREDENCIALES
-        const VALID_CREDENTIALS = {
-            'admin': 'zelle2024',
-            // Puedes agregar más usuarios aquí:
-            // 'usuario2': 'contraseña2',
-        };
-
+        // CONFIGURACIÓN
+        const GITHUB_TOKEN_KEY = 'github_admin_token';
         const SESSION_KEY = 'admin_session';
-        const GITHUB_TOKEN_KEY = 'github_token';
         const REPO_OWNER = 'JardielVega';
         const REPO_NAME = 'MarketZelle';
         const PRODUCTS_FILE = 'src/data/products.json';
@@ -532,12 +525,11 @@
 
         // Inicializar al cargar la página
         window.addEventListener('load', () => {
-            const session = localStorage.getItem(SESSION_KEY);
-            if (session) {
-                currentUser = session;
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
+            if (token) {
+                currentUser = 'GitHub User';
                 showAdminPanel();
                 loadProducts();
-                document.getElementById('currentUser').textContent = currentUser;
             } else {
                 showLoginScreen();
             }
@@ -553,53 +545,44 @@
             document.getElementById('adminPanel').classList.remove('hidden');
         }
 
-        function handleLogin(event) {
+        function requestToken(event) {
             event.preventDefault();
 
-            const usuario = document.getElementById('loginUser').value.trim();
-            const contraseña = document.getElementById('loginPass').value;
+            const token = document.getElementById('githubToken').value.trim();
 
-            // Verificar credenciales
-            if (VALID_CREDENTIALS[usuario] && VALID_CREDENTIALS[usuario] === contraseña) {
-                // Guardar sesión
-                localStorage.setItem(SESSION_KEY, usuario);
-                localStorage.setItem(GITHUB_TOKEN_KEY, ''); // Limpiar token anterior si existe
-                currentUser = usuario;
-                document.getElementById('currentUser').textContent = usuario;
-                showAdminPanel();
-                loadProducts();
-            } else {
-                alert('❌ Usuario o contraseña incorrectos');
-                document.getElementById('loginUser').value = '';
-                document.getElementById('loginPass').value = '';
+            if (!token) {
+                alert('Por favor, ingresa un token válido');
+                return;
             }
+
+            // Guardar token
+            localStorage.setItem(GITHUB_TOKEN_KEY, token);
+            document.getElementById('currentUser').textContent = 'GitHub User';
+            showAdminPanel();
+            loadProducts();
         }
 
         async function loadProducts() {
-            // Para usar la API de GitHub, necesitamos un token
-            // Este puede ser un Personal Access Token que configuraste en GitHub
-            const token = localStorage.getItem(GITHUB_TOKEN_KEY) || localStorage.getItem('github_admin_token');
-            
-            // Si no hay token guardado, usar uno temporal para lectura pública
-            // (en producción, guarda tu token como variable de entorno)
-            
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
+            if (!token) {
+                alert('Token no disponible. Por favor, inicia sesión de nuevo.');
+                logout();
+                return;
+            }
+
             try {
-                let url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_FILE}`;
-                
-                const headers = {
-                    'Accept': 'application/vnd.github.v3.raw'
-                };
-
-                // Si tienes token, agregarlo para mayor límite de requests
-                if (token) {
-                    headers['Authorization'] = `token ${token}`;
-                }
-
-                const response = await fetch(url, { headers });
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_FILE}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3.raw'
+                    }
+                });
 
                 if (!response.ok) {
                     if (response.status === 401) {
-                        alert('Token inválido. Necesitas configurar un GitHub Personal Access Token.');
+                        alert('Token inválido o expirado. Por favor, autentica de nuevo.');
+                        logout();
                         return;
                     }
                     throw new Error(`Error: ${response.status}`);
@@ -687,11 +670,9 @@
         }
 
         async function uploadImageToGitHub(file) {
-            // Para esta función, necesitamos un token válido de GitHub
-            let token = localStorage.getItem(GITHUB_TOKEN_KEY) || localStorage.getItem('github_admin_token');
-            
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
             if (!token) {
-                alert('⚠️ Para subir imágenes, necesitas configurar un GitHub Personal Access Token.\n\nPasos:\n1. Ve a https://github.com/settings/tokens\n2. Crea un "Personal Access Token" con permisos de "repo"\n3. Copia el token\n4. Abre la consola (F12) y ejecuta:\nlocalStorage.setItem("github_admin_token", "tu_token_aqui")');
+                alert('Token no disponible. Por favor, inicia sesión de nuevo.');
                 return null;
             }
 
@@ -788,11 +769,10 @@
         }
 
         async function saveProductsToGitHub() {
-            // Necesitamos un token para escribir en GitHub
-            let token = localStorage.getItem(GITHUB_TOKEN_KEY) || localStorage.getItem('github_admin_token');
-            
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
             if (!token) {
-                alert('⚠️ Para guardar cambios, necesitas configurar un GitHub Personal Access Token.\n\nPasos:\n1. Ve a https://github.com/settings/tokens\n2. Crea un "Personal Access Token" (classic) con permisos de "repo"\n3. Copia el token completo\n4. Abre la consola (F12) y ejecuta:\nlocalStorage.setItem("github_admin_token", "tu_token_aqui")\n\nLuego intenta guardar de nuevo.');
+                alert('Token no disponible. Por favor, inicia sesión de nuevo.');
+                logout();
                 return;
             }
 
@@ -813,7 +793,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Actualizar productos desde panel admin - ${currentUser}`,
+                        message: 'Actualizar productos desde panel de administración',
                         content: btoa(JSON.stringify(currentProducts, null, 2)),
                         sha: fileData.sha
                     })
@@ -831,11 +811,9 @@
         }
 
         function logout() {
-            localStorage.removeItem(SESSION_KEY);
-            currentUser = '';
+            localStorage.removeItem(GITHUB_TOKEN_KEY);
             showLoginScreen();
-            document.getElementById('loginUser').value = '';
-            document.getElementById('loginPass').value = '';
+            document.getElementById('githubToken').value = '';
         }
     </script>
 </body>
