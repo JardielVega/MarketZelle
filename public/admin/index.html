@@ -7,9 +7,6 @@
   <title>Panel de Administración - Market Zelle</title>
   <meta name="description" content="Panel de administración de Market Zelle para gestionar productos" />
   
-  <!-- Netlify Identity para autenticación -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -56,18 +53,8 @@
     <p>Cargando panel de administración...</p>
   </div>
   
-  <!-- Script de Decap CMS (antes Netlify CMS) -->
+  <!-- Script de Decap CMS con autenticación GitHub OAuth -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <script>
-    // Redirigir al login de Netlify si no está autenticado
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on('init', user => {
-        if (!user) {
-          window.netlifyIdentity.open();
-        }
-      });
-    }
-  </script>
 </body>
 </html>
