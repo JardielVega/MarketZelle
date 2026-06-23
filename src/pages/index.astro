@@ -85,6 +85,57 @@ const bannerSlides = [
     </div>
   </header>
 
+  <!-- FLOATING CART BUTTON -->
+  <button id="cartToggle" class="fixed right-4 bottom-4 z-50 bg-emerald-600 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center hover:bg-emerald-700 transition-colors">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    <span id="cartBadge" class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+  </button>
+
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-xl z-40 transform translate-x-full transition-transform duration-300">
+    <div class="p-4 border-b flex items-center justify-between">
+      <h3 class="font-bold text-lg">Tu carrito</h3>
+      <div class="flex gap-2">
+        <button id="clearCartBtn" class="text-sm text-red-500 hover:text-red-700 font-medium">Vaciar</button>
+        <button id="closeCartBtn" class="text-sm text-gray-500 hover:text-gray-700">✕</button>
+      </div>
+    </div>
+    <div id="cartItems" class="p-4 space-y-4 overflow-y-auto" style="max-height:60vh;"></div>
+    <div class="p-4 border-t">
+      <div class="flex justify-between mb-3">
+        <span class="font-semibold">Total</span>
+        <span id="cartTotal" class="font-bold text-lg text-emerald-600">$0.00</span>
+      </div>
+      <button id="checkoutBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-semibold transition-colors">Comprar Ahora</button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 bg-black/50 hidden z-50 items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-xl p-6 max-h-screen overflow-y-auto">
+      <h3 class="font-bold text-xl mb-4">Datos para entrega en Cuba</h3>
+      <form id="checkoutForm" class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium mb-1">Nombre completo</label>
+          <input id="clientName" type="text" placeholder="Ej: Juan Pérez" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Teléfono en Cuba</label>
+          <input id="clientPhone" type="text" placeholder="Ej: 5353XXXXXXX" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Dirección de entrega</label>
+          <textarea id="clientAddress" placeholder="Municipio, calle, número, referencias..." class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" rows="3" required></textarea>
+        </div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-semibold transition-colors">Enviar por WhatsApp</button>
+          <button type="button" id="cancelCheckout" class="flex-1 border border-gray-300 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- HERO CAROUSEL -->
   <section class="relative overflow-hidden" id="heroCarousel">
     <div class="flex transition-transform duration-500 ease-out" id="carouselTrack">
@@ -148,6 +199,9 @@ const bannerSlides = [
             data-category={product.category}
             data-top={product.top ? 'true' : 'false'}
             data-name={product.name.toLowerCase()}
+            data-id={product.id}
+            data-price={product.price}
+            data-image={product.image}
           >
             <div class="relative overflow-hidden">
               <img
@@ -171,15 +225,28 @@ const bannerSlides = [
               <h3 class="font-bold text-gray-900 text-base mb-1 group-hover:text-emerald-600 transition-colors">{product.name}</h3>
               <p class="text-gray-500 text-sm leading-relaxed mb-4">{product.description}</p>
 
-              <a
-                href={`${whatsappBase}?text=${encodeURIComponent(`¡Hola! Me interesa comprar: ${product.name} ($${product.price.toFixed(2)}). ¿Está disponible?`)}`}
-                target="_blank"
-                rel="noopener"
-                class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors text-sm"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                Comprar
-              </a>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  class="add-to-cart flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors"
+                  data-id={product.id}
+                  data-name={product.name}
+                  data-price={product.price}
+                  data-image={product.image}
+                >
+                  Añadir
+                </button>
+
+                <a
+                  href={`${whatsappBase}?text=${encodeURIComponent(`¡Hola! Me interesa comprar: ${product.name} ($${product.price.toFixed(2)}). ¿Está disponible?`)}`}
+                  target="_blank"
+                  rel="noopener"
+                  class="flex-1 flex items-center justify-center gap-2 bg-white border border-emerald-600 text-emerald-600 font-semibold py-2.5 px-4 rounded-xl text-sm hover:bg-emerald-50 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  Comprar
+                </a>
+              </div>
             </div>
           </article>
         ))}
@@ -398,10 +465,228 @@ const bannerSlides = [
         }
       });
     });
+
+    // ===== SHOPPING CART =====
+    const CART_KEY = 'mz_cart_v1';
+    const WHATSAPP_NUMBER = '5352572028';
+    const WHATSAPP_BASE = `https://wa.me/${WHATSAPP_NUMBER}`;
+    let cart: any[] = [];
+
+    function saveCart() {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function loadCart() {
+      const raw = localStorage.getItem(CART_KEY);
+      cart = raw ? JSON.parse(raw) : [];
+      renderCart();
+    }
+
+    function formatMoney(n: number) {
+      return '$' + Number(n).toFixed(2);
+    }
+
+    function updateBadge() {
+      const count = cart.reduce((s, i) => s + i.qty, 0);
+      (document.getElementById('cartBadge') as HTMLElement).textContent = count;
+    }
+
+    function addToCartFromButton(e: any) {
+      const btn = e.currentTarget;
+      const id = btn.dataset.id;
+      const name = btn.dataset.name;
+      const price = Number(btn.dataset.price);
+      const image = btn.dataset.image;
+      addToCart({ id, name, price, image });
+    }
+
+    function addToCart(item: any) {
+      const existing = cart.find(i => String(i.id) === String(item.id));
+      if (existing) existing.qty += 1;
+      else cart.push({ ...item, qty: 1 });
+      saveCart();
+      renderCart();
+      const btn = document.getElementById('cartToggle');
+      if (btn) {
+        btn.classList.add('animate-bounce');
+        setTimeout(() => btn.classList.remove('animate-bounce'), 600);
+      }
+    }
+
+    function changeQty(id: string, delta: number) {
+      const it = cart.find(i => String(i.id) === String(id));
+      if (!it) return;
+      it.qty += delta;
+      if (it.qty <= 0) cart = cart.filter(i => String(i.id) !== String(id));
+      saveCart();
+      renderCart();
+    }
+
+    function removeItem(id: string) {
+      cart = cart.filter(i => String(i.id) !== String(id));
+      saveCart();
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      saveCart();
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems') as HTMLElement;
+      container.innerHTML = '';
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="text-center text-gray-500 py-8">Tu carrito está vacío</div>';
+      } else {
+        cart.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'flex items-center gap-3 pb-3 border-b';
+          el.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded" />
+            <div class="flex-1">
+              <div class="font-semibold text-sm">${item.name}</div>
+              <div class="text-xs text-gray-500 mt-1">${formatMoney(item.price)} x ${item.qty} = <strong>${formatMoney(item.price * item.qty)}</strong></div>\n              <div class="mt-2 flex gap-1">
+                <button class="qty-btn text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-100" data-action="dec" data-id="${item.id}">−</button>
+                <button class="qty-btn text-xs px-2 py-1 border border-gray-300 rounded hover:bg-gray-100" data-action="inc" data-id="${item.id}">+</button>
+                <button class="remove-btn text-xs px-2 py-1 text-red-600 hover:text-red-800" data-id="${item.id}">Eliminar</button>
+              </div>
+            </div>
+          `;\n          container.appendChild(el);
+        });
+      }
+
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      (document.getElementById('cartTotal') as HTMLElement).textContent = formatMoney(total);
+      updateBadge();
+
+      document.querySelectorAll('.qty-btn').forEach(b => {
+        (b as HTMLElement).onclick = () => {
+          const id = (b as HTMLElement).dataset.id;
+          const action = (b as HTMLElement).dataset.action;
+          changeQty(id || '', action === 'inc' ? 1 : -1);
+        };
+      });
+      document.querySelectorAll('.remove-btn').forEach(b => {
+        (b as HTMLElement).onclick = () => removeItem((b as HTMLElement).dataset.id || '');
+      });
+    }
+
+    function openCart() {
+      const drawer = document.getElementById('cartDrawer');
+      if (drawer) {
+        drawer.classList.remove('translate-x-full');
+        drawer.classList.add('translate-x-0');
+      }
+    }
+
+    function closeCart() {
+      const drawer = document.getElementById('cartDrawer');
+      if (drawer) {
+        drawer.classList.remove('translate-x-0');
+        drawer.classList.add('translate-x-full');
+      }
+    }
+
+    function openCheckout() {
+      const modal = document.getElementById('checkoutModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeCheckout() {
+      const modal = document.getElementById('checkoutModal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function buildWhatsAppMessage(name: string, phone: string, address: string) {
+      let lines: string[] = [];
+      lines.push('🛒 *Pedido desde Market Zelle*');
+      lines.push('');
+      cart.forEach(i => {
+        lines.push(`• ${i.name} x${i.qty} = ${formatMoney(i.price * i.qty)} (${formatMoney(i.price)} c/u)`);
+      });
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      lines.push('');
+      lines.push(`*Total: ${formatMoney(total)}*`);
+      lines.push('');
+      lines.push('*Datos de entrega:*');
+      lines.push(`Nombre: ${name}`);
+      lines.push(`Teléfono: ${phone}`);
+      lines.push(`Dirección: ${address}`);
+      return encodeURIComponent(lines.join('\n'));
+    }
+
+    function sendOrderToWhatsApp(name: string, phone: string, address: string) {
+      if (!cart.length) { alert('El carrito está vacío'); return; }
+      const text = buildWhatsAppMessage(name, phone, address);
+      const url = `${WHATSAPP_BASE}?text=${text}`;
+      window.open(url, '_blank');
+    }
+
+    // Event Bindings
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', addToCartFromButton);
+      });
+
+      const cartToggle = document.getElementById('cartToggle');
+      if (cartToggle) cartToggle.addEventListener('click', openCart);
+
+      const closeCartBtn = document.getElementById('closeCartBtn');
+      if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
+
+      const clearCartBtn = document.getElementById('clearCartBtn');
+      if (clearCartBtn) clearCartBtn.addEventListener('click', () => {
+        if (confirm('¿Vaciar carrito?')) clearCart();
+      });
+
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      if (checkoutBtn) checkoutBtn.addEventListener('click', () => {
+        openCheckout();
+      });
+
+      const cancelCheckout = document.getElementById('cancelCheckout');
+      if (cancelCheckout) cancelCheckout.addEventListener('click', closeCheckout);
+
+      const checkoutForm = document.getElementById('checkoutForm') as HTMLFormElement;
+      if (checkoutForm) {
+        checkoutForm.addEventListener('submit', (ev) => {
+          ev.preventDefault();
+          const name = (document.getElementById('clientName') as HTMLInputElement).value.trim();
+          const phone = (document.getElementById('clientPhone') as HTMLInputElement).value.trim();
+          const address = (document.getElementById('clientAddress') as HTMLTextAreaElement).value.trim();
+          if (!name || !phone || !address) {
+            alert('Por favor completa todos los campos.');
+            return;
+          }
+          sendOrderToWhatsApp(name, phone, address);
+          clearCart();
+          closeCheckout();
+          closeCart();
+          alert('¡Pedido enviado! Serás redirigido a WhatsApp.');
+        });
+      }
+    });
   </script>
 
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-bounce {
+      animation: bounce 0.6s ease-in-out;
+    }
   </style>
 </Layout>
