@@ -2,16 +2,15 @@ backend:
   name: github
   repo: JardielVega/MarketZelle
   branch: main
-  base_url: https://auth.decapcms.com
-  auth_endpoint: github
-  app_id: Ov23liKEO07uL35OaJMG
-  open_authoring: true
+  auth_endpoint: https://netlify-cms-auth.herokuapp.com/auth
 
 site_url: https://marketzelle.vercel.app
+display_url: https://marketzelle.vercel.app
 logo_url: https://marketzelle.vercel.app/Productos/logo.jpg
 
 media_folder: "public/Productos"
 public_folder: "/Productos"
+
 media_library:
   max_file_size: 10000000
 
