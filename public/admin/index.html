@@ -19,8 +19,8 @@
             --text: #0f172a;
             --text-muted: #64748b;
             --text-light: #94a3b8;
-            --danger: #dc2626;
-            --danger-hover: #b91c1c;
+            --danger: rgba(59, 130, 246, 0.5);
+            --danger-hover: rgba(59, 130, 246, 0.7);
             --header-bg: #0f172a;
             --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
             --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
@@ -168,8 +168,8 @@
             box-shadow: var(--shadow-sm);
         }
 
-        .btn-danger { background: var(--danger); }
-        .btn-danger:hover { background: var(--danger-hover); box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25); }
+        .btn-danger { background: var(--danger); color: #1e40af; }
+        .btn-danger:hover { background: var(--danger-hover); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
 
         .btn-sm { padding: 7px 12px; font-size: 12px; }
 
@@ -386,7 +386,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            color: #b45309;
+            color: rgba(59, 130, 246, 0.8);
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 6px;
@@ -742,7 +742,7 @@
             transition: color 0.2s, background 0.2s;
         }
 
-        .reminder-delete:hover { color: var(--danger); background: #fef2f2; }
+        .reminder-delete:hover { color: var(--danger); background: rgba(59, 130, 246, 0.1); }
 
         .reminders-empty {
             text-align: center;
@@ -816,9 +816,9 @@
 
                 <div class="category-filter-bar" id="adminCategoryFilter">
                     <button class="cat-filter-btn active" data-cat="todos" onclick="setProductFilter('todos')">Todos</button>
-                    <button class="cat-filter-btn" data-cat="alimentos" onclick="setProductFilter('alimentos')">🥘 Alimentos</button>
-                    <button class="cat-filter-btn" data-cat="electronicos" onclick="setProductFilter('electronicos')">💻 Electrónicos</button>
-                    <button class="cat-filter-btn" data-cat="aseo" onclick="setProductFilter('aseo')">🧼 Aseo</button>
+                    <button class="cat-filter-btn" data-cat="alimentos" onclick="setProductFilter('alimentos')"><span class="icon" id="catAlimentosIcon"></span> Alimentos</button>
+                    <button class="cat-filter-btn" data-cat="electronicos" onclick="setProductFilter('electronicos')"><span class="icon" id="catElectronicosIcon"></span> Electrónicos</button>
+                    <button class="cat-filter-btn" data-cat="aseo" onclick="setProductFilter('aseo')"><span class="icon" id="catAseoIcon"></span> Aseo</button>
                 </div>
 
                 <div id="productsGrid"></div>
@@ -973,13 +973,15 @@
         const REPO_NAME = 'MarketZelle';
         const PRODUCTS_FILE = 'src/data/products.json';
         const BANNERS_FILE = 'src/data/banners.json';
+        const REMINDERS_FILE = 'src/data/reminders.json';
         let currentProducts = [];
         let currentBanners = [];
+        let adminReminders = [];
         let activeProductCategory = 'todos';
         const PRODUCT_CATEGORIES = [
-            { id: 'alimentos', name: '🥘 Alimentos' },
-            { id: 'electronicos', name: '💻 Electrónicos' },
-            { id: 'aseo', name: '🧼 Aseo' }
+            { id: 'alimentos', name: 'Alimentos' },
+            { id: 'electronicos', name: 'Electrónicos' },
+            { id: 'aseo', name: 'Aseo' }
         ];
         let editingProductIndex = -1;
         let editingBannerIndex = -1;
@@ -1035,7 +1037,10 @@
                 saveBannerIcon: ['check', 15],
                 remindersHeaderIcon: ['bell', 16],
                 remindersCloseIcon: ['x', 16],
-                addReminderIcon: ['plus', 15]
+                addReminderIcon: ['plus', 15],
+                catAlimentosIcon: ['utensils', 16],
+                catElectronicosIcon: ['laptop', 16],
+                catAseoIcon: ['sparkles', 16]
             };
             Object.entries(map).forEach(([id, [name, size]]) => {
                 const el = document.getElementById(id);
@@ -1055,18 +1060,55 @@
                 .replace(/"/g, '&quot;');
         }
 
-        function loadReminders() {
-            try {
-                adminReminders = JSON.parse(localStorage.getItem(REMINDERS_KEY) || '[]');
-            } catch {
+        async function loadReminders() {
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
+            if (!token) {
                 adminReminders = [];
+                renderReminders();
+                updateReminderBadge();
+                return;
             }
-            renderReminders();
-            updateReminderBadge();
+
+            try {
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${REMINDERS_FILE}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3.raw',
+                        'User-Agent': 'Market-Zelle-Admin'
+                    }
+                });
+
+                if (response.status === 404) {
+                    adminReminders = [];
+                    renderReminders();
+                    updateReminderBadge();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}`);
+                }
+
+                const content = await response.text();
+                adminReminders = JSON.parse(content);
+                renderReminders();
+                updateReminderBadge();
+            } catch (error) {
+                console.error('Error cargando recordatorios:', error);
+                adminReminders = [];
+                renderReminders();
+                updateReminderBadge();
+            }
         }
 
-        function saveReminders() {
-            localStorage.setItem(REMINDERS_KEY, JSON.stringify(adminReminders));
+        async function saveReminders() {
+            await saveFileToGitHub(
+                REMINDERS_FILE,
+                JSON.stringify(adminReminders, null, 2),
+                'Actualizar recordatorios desde panel de administración',
+                'Recordatorios guardados correctamente.'
+            );
             updateReminderBadge();
         }
 
@@ -1079,25 +1121,25 @@
             if (open) loadReminders();
         }
 
-        function addReminder() {
+        async function addReminder() {
             adminReminders.unshift({ id: Date.now(), text: '', createdAt: new Date().toISOString() });
-            saveReminders();
+            await saveReminders();
             renderReminders();
             const first = document.querySelector('#remindersList textarea');
             if (first) first.focus();
         }
 
-        function updateReminder(id, text) {
+        async function updateReminder(id, text) {
             const note = adminReminders.find((r) => r.id === id);
             if (note) {
                 note.text = text;
-                saveReminders();
+                await saveReminders();
             }
         }
 
-        function deleteReminder(id) {
+        async function deleteReminder(id) {
             adminReminders = adminReminders.filter((r) => r.id !== id);
-            saveReminders();
+            await saveReminders();
             renderReminders();
         }
 
@@ -1134,13 +1176,13 @@
         // Inicializar al cargar la página
         window.addEventListener('load', () => {
             injectStaticIcons();
-            loadReminders();
             const token = localStorage.getItem(GITHUB_TOKEN_KEY);
             if (token) {
                 currentUser = 'GitHub User';
                 showAdminPanel();
                 loadProducts();
                 loadBanners();
+                loadReminders();
             } else {
                 showLoginScreen();
             }
@@ -1195,6 +1237,7 @@
                 showAdminPanel();
                 loadProducts();
                 loadBanners();
+                loadReminders();
             } catch (error) {
                 console.error('Error validando token:', error);
                 alert('❌ Error al validar token: ' + error.message);
@@ -1281,15 +1324,15 @@
                     <h3>${product.name}</h3>
                     <p class="product-price">$${product.price.toFixed(2)}</p>
                     <p><strong>Categoría:</strong> ${product.category}</p>
-                    ${product.top ? '<p style="color: #f59e0b;">⭐ Destacado</p>' : ''}
+                    ${product.top ? `<p class="product-badge-top">${ic('star', 14)} Destacado</p>` : ''}
                     <p>${product.description}</p>
                     <div class="order-actions">
-                        <button class="btn btn-order" onclick="moveProduct(${index}, -1)" ${isFirst ? 'disabled' : ''} title="Subir en la categoría">⬆️ Subir</button>
-                        <button class="btn btn-order" onclick="moveProduct(${index}, 1)" ${isLast ? 'disabled' : ''} title="Bajar en la categoría">⬇️ Bajar</button>
+                        <button class="btn btn-order" onclick="moveProduct(${index}, -1)" ${isFirst ? 'disabled' : ''} title="Subir en la categoría">${ic('arrow-up', 14)} Subir</button>
+                        <button class="btn btn-order" onclick="moveProduct(${index}, 1)" ${isLast ? 'disabled' : ''} title="Bajar en la categoría">${ic('arrow-down', 14)} Bajar</button>
                     </div>
                     <div class="product-actions">
-                        <button class="btn" onclick="editProduct(${index})">✏️ Editar</button>
-                        <button class="btn btn-danger" onclick="deleteProduct(${index})">🗑️ Eliminar</button>
+                        <button class="btn" onclick="editProduct(${index})">${ic('pencil', 14)} Editar</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${index})">${ic('trash', 14)} Eliminar</button>
                     </div>
                 </div>
             `;
