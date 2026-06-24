@@ -223,5 +223,14 @@
     "description": "Ingredientes: Agua, leche entera, leche descremada, azúcar refino, cultivos lácteos, saborizantes artificiales, pulpas y frutas naturales.",
     "image": "/Productos/yogurt-natural-xtasis-tropical-4l-1782246034168.jpeg",
     "top": true
+  },
+  {
+    "id": 26,
+    "name": "Detergente Multiuso 5L",
+    "price": 7,
+    "category": "aseo",
+    "description": "Detergente Líquido de 5L Lavavajillas ",
+    "image": "/Productos/detergente-multiuso-5l-1782269787028.jpeg",
+    "top": false
   }
 ]
