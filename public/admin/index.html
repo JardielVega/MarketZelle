@@ -1145,19 +1145,20 @@
             try {
                 const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
 
-                // Obtener SHA actual del archivo (si existe)
+                // Obtener SHA actual del archivo (si existe). Se consulta sin caché y
+                // fijando la rama main para evitar respuestas viejas que rompen el PUT.
                 let sha = null;
-                const getResponse = await fetch(url, {
+                const getResponse = await fetch(`${url}?ref=main&t=${Date.now()}`, {
+                    cache: 'no-store',
                     headers: {
                         'Authorization': `token ${token}`,
-                        'User-Agent': 'Market-Zelle-Admin',
                         'Accept': 'application/vnd.github.v3+json'
                     }
                 });
 
                 if (getResponse.ok) {
                     const meta = await getResponse.json();
-                    if (meta && meta.sha) {
+                    if (meta && !Array.isArray(meta) && meta.sha) {
                         sha = meta.sha;
                     }
                 } else if (getResponse.status === 401) {
@@ -1165,20 +1166,42 @@
                 } else if (getResponse.status !== 404) {
                     throw new Error(`Error ${getResponse.status}`);
                 }
-                // 404 => el archivo no existe todavía, se creará (sha null)
+
+                // Respaldo: si no obtuvimos el sha por contents, buscarlo en el árbol git.
+                // Esto evita el 422 "sha wasn't supplied" cuando el archivo sí existe.
+                if (!sha) {
+                    const treeUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1&t=${Date.now()}`;
+                    const treeResponse = await fetch(treeUrl, {
+                        cache: 'no-store',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    if (treeResponse.ok) {
+                        const treeData = await treeResponse.json();
+                        const file = (treeData.tree || []).find(f => f.path === filePath);
+                        if (file && file.sha) {
+                            sha = file.sha;
+                        }
+                    }
+                }
+                // sha null => el archivo no existe todavía, se creará
 
                 const body = {
                     message: commitMessage,
-                    content: utf8ToBase64(contentString)
+                    content: utf8ToBase64(contentString),
+                    branch: 'main'
                 };
                 if (sha) body.sha = sha;
 
                 const updateResponse = await fetch(url, {
                     method: 'PUT',
+                    cache: 'no-store',
                     headers: {
                         'Authorization': `token ${token}`,
                         'Content-Type': 'application/json',
-                        'User-Agent': 'Market-Zelle-Admin'
+                        'Accept': 'application/vnd.github.v3+json'
                     },
                     body: JSON.stringify(body)
                 });
