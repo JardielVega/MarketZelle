@@ -960,7 +960,27 @@
         </div>
         <div class="reminders-body" id="remindersList"></div>
         <div class="reminders-footer">
-            <button class="btn" onclick="addReminder()"><span class="icon" id="addReminderIcon"></span> Nueva nota</button>
+            <button class="btn" onclick="openAddReminderModal()"><span class="icon" id="addReminderIcon"></span> Nueva nota</button>
+        </div>
+    </div>
+
+    <!-- MODAL PARA AGREGAR NOTA -->
+    <div id="reminderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Agregar Nueva Nota</h2>
+                <button class="close-btn" onclick="closeReminderModal()"><span class="icon" id="closeReminderIcon"></span></button>
+            </div>
+            <form id="reminderForm" onsubmit="saveReminder(event)">
+                <div class="form-group">
+                    <label for="reminderText">Escribe tu nota *</label>
+                    <textarea id="reminderText" placeholder="Escribe tu recordatorio aquí..." required style="min-height: 120px;"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn"><span class="icon" id="saveReminderIcon"></span> Guardar Nota</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeReminderModal()">Cancelar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1038,6 +1058,8 @@
                 remindersHeaderIcon: ['bell', 16],
                 remindersCloseIcon: ['x', 16],
                 addReminderIcon: ['plus', 15],
+                closeReminderIcon: ['x', 16],
+                saveReminderIcon: ['check', 15],
                 catAlimentosIcon: ['utensils', 16],
                 catElectronicosIcon: ['laptop', 16],
                 catAseoIcon: ['sparkles', 16]
@@ -1121,12 +1143,24 @@
             if (open) loadReminders();
         }
 
-        async function addReminder() {
-            adminReminders.unshift({ id: Date.now(), text: '', createdAt: new Date().toISOString() });
+        function openAddReminderModal() {
+            document.getElementById('reminderForm').reset();
+            document.getElementById('reminderModal').classList.add('active');
+        }
+
+        function closeReminderModal() {
+            document.getElementById('reminderModal').classList.remove('active');
+        }
+
+        async function saveReminder(event) {
+            event.preventDefault();
+            const text = document.getElementById('reminderText').value.trim();
+            if (!text) return;
+
+            adminReminders.unshift({ id: Date.now(), text: text, createdAt: new Date().toISOString() });
             await saveReminders();
             renderReminders();
-            const first = document.querySelector('#remindersList textarea');
-            if (first) first.focus();
+            closeReminderModal();
         }
 
         async function updateReminder(id, text) {
@@ -1738,7 +1772,7 @@
         }
 
         // Guarda un archivo de texto en GitHub (crea o actualiza). Codifica en UTF-8 para no romper tildes.
-        async function saveFileToGitHub(filePath, contentString, commitMessage, successMessage) {
+        async function saveFileToGitHub(filePath, contentString, commitMessage, successMessage, retries = 3) {
             const token = localStorage.getItem(GITHUB_TOKEN_KEY);
             if (!token) {
                 alert('Token no disponible. Por favor, inicia sesión de nuevo.');
@@ -1813,6 +1847,14 @@
                 if (!updateResponse.ok) {
                     const errorBody = await updateResponse.json();
                     console.error('Error guardando:', updateResponse.status, errorBody);
+                    
+                    // Si es error 409 (conflicto de SHA), reintentar con el SHA actualizado
+                    if (updateResponse.status === 409 && retries > 0) {
+                        console.log('Conflicto de SHA, reintentando...');
+                        await new Promise(resolve => setTimeout(resolve, 500)); // Esperar 500ms antes de reintentar
+                        return saveFileToGitHub(filePath, contentString, commitMessage, successMessage, retries - 1);
+                    }
+                    
                     throw new Error(`Error ${updateResponse.status}: ${errorBody.message}`);
                 }
 
