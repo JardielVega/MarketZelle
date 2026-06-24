@@ -72,15 +72,6 @@
     "image": "/Productos/salchichas_3kg.jpg"
   },
   {
-    "id": 8,
-    "name": "Paca de Azúcar (10u)",
-    "price": 22,
-    "category": "alimentos",
-    "top": false,
-    "description": "Pack de 10 unidades de azúcar blanca",
-    "image": "/Productos/azucar.jpg"
-  },
-  {
     "id": 9,
     "name": "Paca de Frijoles (10u)",
     "price": 22,
@@ -88,6 +79,15 @@
     "description": "Pack de 10 unidades de frijoles de primera calidad",
     "image": "/Productos/frijol.jpg",
     "top": false
+  },
+  {
+    "id": 8,
+    "name": "Paca de Azúcar (10u)",
+    "price": 22,
+    "category": "alimentos",
+    "top": false,
+    "description": "Pack de 10 unidades de azúcar blanca",
+    "image": "/Productos/azucar.jpg"
   },
   {
     "id": 10,
