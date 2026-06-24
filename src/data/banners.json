@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Envíos directos a Camagüey",
+    "subtitle": "Tus productos llegan a la puerta de tus seres queridos",
+    "image": "/banner1.jpg"
+  },
+  {
+    "title": "Productos de primera calidad",
+    "subtitle": "Solo lo mejor para tu familia en Cuba",
+    "image": "/banner2.jpg"
+  },
+  {
+    "title": "Variedad para toda la familia",
+    "subtitle": "Encuentra alimentos, aseo y más en un solo lugar",
+    "image": "/banner3.jpg"
+  },
+  {
+    "title": "Ofertas semanales",
+    "subtitle": "Descuentos especiales en combos de alimentos",
+    "image": "/banner4.jpg"
+  }
+]

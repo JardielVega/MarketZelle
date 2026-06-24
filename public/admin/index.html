@@ -339,6 +339,52 @@
             border-left: 5px solid #10b981;
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #6b7280;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+        }
+
+        .tab-btn.active {
+            background: #10b981;
+            color: white;
+        }
+
+        .banner-card {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .banner-card img {
+            width: 220px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .banner-card .banner-info { flex: 1; }
+        .banner-card .banner-info h3 { margin: 0 0 6px; color: #1f2937; }
+        .banner-card .banner-info p { color: #666; font-size: 14px; margin: 0 0 4px; }
+
         .empty-state {
             background: white;
             padding: 80px 20px;
@@ -426,16 +472,43 @@
                 </div>
             </header>
 
-            <div class="admin-actions">
-                <button class="btn" onclick="openAddProductModal()">➕ Nuevo Producto</button>
+            <div class="tabs">
+                <button id="tabProductsBtn" class="tab-btn active" onclick="switchTab('products')">📦 Productos</button>
+                <button id="tabBannersBtn" class="tab-btn" onclick="switchTab('banners')">🖼️ Carrusel</button>
             </div>
 
-            <div id="productsGrid" class="products-grid"></div>
+            <!-- SECCIÓN PRODUCTOS -->
+            <div id="productsSection">
+                <div class="admin-actions">
+                    <button class="btn" onclick="openAddProductModal()">➕ Nuevo Producto</button>
+                </div>
 
-            <div id="emptyState" class="empty-state hidden">
-                <p style="font-size: 48px; margin-bottom: 15px;">📭</p>
-                <p><strong>No hay productos aún</strong></p>
-                <p>¡Crea uno para comenzar a vender!</p>
+                <div id="productsGrid" class="products-grid"></div>
+
+                <div id="emptyState" class="empty-state hidden">
+                    <p style="font-size: 48px; margin-bottom: 15px;">📭</p>
+                    <p><strong>No hay productos aún</strong></p>
+                    <p>¡Crea uno para comenzar a vender!</p>
+                </div>
+            </div>
+
+            <!-- SECCIÓN CARRUSEL -->
+            <div id="bannersSection" class="hidden">
+                <div class="admin-actions">
+                    <button class="btn" onclick="openAddBannerModal()">➕ Nueva Imagen del Carrusel</button>
+                </div>
+
+                <div class="note">
+                    🖼️ Estas imágenes se muestran en el carrusel principal de la página de inicio. Recomendado: imágenes horizontales (por ejemplo 1600×600).
+                </div>
+
+                <div id="bannersList"></div>
+
+                <div id="bannersEmptyState" class="empty-state hidden">
+                    <p style="font-size: 48px; margin-bottom: 15px;">🖼️</p>
+                    <p><strong>No hay imágenes en el carrusel aún</strong></p>
+                    <p>¡Agrega una para mostrarla en la página de inicio!</p>
+                </div>
             </div>
         </div>
     </div>
@@ -502,6 +575,43 @@
         </div>
     </div>
 
+    <!-- MODAL PARA AGREGAR/EDITAR IMAGEN DEL CARRUSEL -->
+    <div id="bannerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="bannerModalTitle">Agregar Imagen del Carrusel</h2>
+                <button class="close-btn" onclick="closeBannerModal()">&times;</button>
+            </div>
+
+            <form id="bannerForm" onsubmit="saveBanner(event)">
+                <div class="form-group">
+                    <label for="bannerTitle">Título</label>
+                    <input type="text" id="bannerTitle" placeholder="Ej: Envíos directos a Camagüey">
+                </div>
+
+                <div class="form-group">
+                    <label for="bannerSubtitle">Subtítulo</label>
+                    <input type="text" id="bannerSubtitle" placeholder="Ej: Tus productos llegan a la puerta de tus seres queridos">
+                </div>
+
+                <div class="form-group">
+                    <label for="bannerImage">Imagen del Carrusel *</label>
+                    <div style="margin-bottom: 10px;">
+                        <input type="file" id="bannerImageFile" accept="image/*" onchange="previewBannerImage(event)">
+                        <small style="color: #666; display: block; margin-top: 5px;">Sube una imagen (JPG, PNG) o ingresa la URL manualmente</small>
+                    </div>
+                    <img id="bannerImagePreview" style="width: 100%; max-width: 400px; border-radius: 6px; margin-bottom: 10px; display: none;">
+                    <input type="text" id="bannerImage" placeholder="/banner1.jpg" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">✅ Guardar Imagen</button>
+                    <button type="button" class="btn btn-danger" onclick="closeBannerModal()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // CONFIGURACIÓN
         const GITHUB_TOKEN_KEY = 'github_admin_token';
@@ -509,9 +619,17 @@
         const REPO_OWNER = 'JardielVega';
         const REPO_NAME = 'MarketZelle';
         const PRODUCTS_FILE = 'src/data/products.json';
+        const BANNERS_FILE = 'src/data/banners.json';
         let currentProducts = [];
+        let currentBanners = [];
         let editingProductIndex = -1;
+        let editingBannerIndex = -1;
         let currentUser = '';
+
+        // Codifica texto a base64 respetando UTF-8 (btoa por si solo rompe tildes/acentos)
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
 
         // Inicializar al cargar la página
         window.addEventListener('load', () => {
@@ -520,6 +638,7 @@
                 currentUser = 'GitHub User';
                 showAdminPanel();
                 loadProducts();
+                loadBanners();
             } else {
                 showLoginScreen();
             }
@@ -573,6 +692,7 @@
                 document.getElementById('currentUser').textContent = user.login || 'GitHub User';
                 showAdminPanel();
                 loadProducts();
+                loadBanners();
             } catch (error) {
                 console.error('Error validando token:', error);
                 alert('❌ Error al validar token: ' + error.message);
@@ -648,6 +768,207 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function switchTab(tab) {
+            const isProducts = tab === 'products';
+            document.getElementById('productsSection').classList.toggle('hidden', !isProducts);
+            document.getElementById('bannersSection').classList.toggle('hidden', isProducts);
+            document.getElementById('tabProductsBtn').classList.toggle('active', isProducts);
+            document.getElementById('tabBannersBtn').classList.toggle('active', !isProducts);
+        }
+
+        // ===== CARRUSEL / BANNERS =====
+        async function loadBanners() {
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
+            if (!token) return;
+
+            try {
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${BANNERS_FILE}`;
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3.raw',
+                        'User-Agent': 'Market-Zelle-Admin'
+                    }
+                });
+
+                if (response.status === 404) {
+                    // Aún no existe el archivo: empezamos con lista vacía
+                    currentBanners = [];
+                    displayBanners();
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}`);
+                }
+
+                const content = await response.text();
+                currentBanners = JSON.parse(content);
+                displayBanners();
+            } catch (error) {
+                console.error('Error cargando carrusel:', error);
+                currentBanners = [];
+                displayBanners();
+            }
+        }
+
+        function displayBanners() {
+            const list = document.getElementById('bannersList');
+            const emptyState = document.getElementById('bannersEmptyState');
+
+            if (!currentBanners || currentBanners.length === 0) {
+                list.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            list.innerHTML = currentBanners.map((banner, index) => `
+                <div class="banner-card">
+                    <img src="${banner.image}" alt="${banner.title || 'Banner'}" onerror="this.src='https://via.placeholder.com/220x110?text=No+Image'">
+                    <div class="banner-info">
+                        <h3>${banner.title || '(Sin título)'}</h3>
+                        <p>${banner.subtitle || ''}</p>
+                        <p style="color:#9ca3af;font-size:12px;">${banner.image}</p>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn" onclick="editBanner(${index})">✏️ Editar</button>
+                        <button class="btn btn-danger" onclick="deleteBanner(${index})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddBannerModal() {
+            editingBannerIndex = -1;
+            document.getElementById('bannerModalTitle').textContent = 'Agregar Imagen del Carrusel';
+            document.getElementById('bannerForm').reset();
+            document.getElementById('bannerImagePreview').style.display = 'none';
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        function editBanner(index) {
+            editingBannerIndex = index;
+            const banner = currentBanners[index];
+            document.getElementById('bannerModalTitle').textContent = 'Editar Imagen del Carrusel';
+            document.getElementById('bannerTitle').value = banner.title || '';
+            document.getElementById('bannerSubtitle').value = banner.subtitle || '';
+            document.getElementById('bannerImage').value = banner.image || '';
+            document.getElementById('bannerImagePreview').style.display = 'none';
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        function closeBannerModal() {
+            document.getElementById('bannerModal').classList.remove('active');
+            document.getElementById('bannerImageFile').value = '';
+            document.getElementById('bannerImagePreview').style.display = 'none';
+            editingBannerIndex = -1;
+        }
+
+        function previewBannerImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('bannerImagePreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        async function uploadBannerImageToGitHub(file) {
+            const token = localStorage.getItem(GITHUB_TOKEN_KEY);
+            if (!token) {
+                alert('Token no disponible. Por favor, inicia sesión de nuevo.');
+                return null;
+            }
+
+            try {
+                const baseName = (document.getElementById('bannerTitle').value || 'banner')
+                    .toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]/g, '') || 'banner';
+
+                const extension = file.name.split('.').pop();
+                const fileName = `${baseName}-${Date.now()}.${extension}`;
+                const filePath = `public/${fileName}`;
+
+                const reader = new FileReader();
+                const base64 = await new Promise((resolve) => {
+                    reader.onload = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(file);
+                });
+
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Agregar imagen del carrusel: ${fileName}`,
+                        content: base64
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                const imagePath = `/${fileName}`;
+                document.getElementById('bannerImage').value = imagePath;
+                return imagePath;
+            } catch (error) {
+                console.error('Error subiendo imagen del carrusel:', error);
+                alert('Error al subir imagen: ' + error.message);
+                return null;
+            }
+        }
+
+        async function saveBanner(event) {
+            event.preventDefault();
+
+            const imageFile = document.getElementById('bannerImageFile').files[0];
+            let imagePath = document.getElementById('bannerImage').value;
+
+            if (imageFile) {
+                imagePath = await uploadBannerImageToGitHub(imageFile);
+                if (!imagePath) {
+                    alert('Error al subir la imagen. Por favor, intenta de nuevo.');
+                    return;
+                }
+            }
+
+            const banner = {
+                title: document.getElementById('bannerTitle').value,
+                subtitle: document.getElementById('bannerSubtitle').value,
+                image: imagePath
+            };
+
+            if (editingBannerIndex >= 0) {
+                currentBanners[editingBannerIndex] = banner;
+            } else {
+                currentBanners.push(banner);
+            }
+
+            await saveBannersToGitHub();
+            closeBannerModal();
+            displayBanners();
+        }
+
+        async function deleteBanner(index) {
+            if (!confirm('¿Estás seguro de que quieres eliminar esta imagen del carrusel?')) return;
+            currentBanners.splice(index, 1);
+            await saveBannersToGitHub();
+            displayBanners();
         }
 
         function openAddProductModal() {
@@ -795,85 +1116,63 @@
         }
 
         async function saveProductsToGitHub() {
+            await saveFileToGitHub(
+                PRODUCTS_FILE,
+                JSON.stringify(currentProducts, null, 2),
+                'Actualizar productos desde panel de administración',
+                'Productos guardados correctamente.'
+            );
+        }
+
+        async function saveBannersToGitHub() {
+            await saveFileToGitHub(
+                BANNERS_FILE,
+                JSON.stringify(currentBanners, null, 2),
+                'Actualizar carrusel desde panel de administración',
+                'Carrusel guardado correctamente.'
+            );
+        }
+
+        // Guarda un archivo de texto en GitHub (crea o actualiza). Codifica en UTF-8 para no romper tildes.
+        async function saveFileToGitHub(filePath, contentString, commitMessage, successMessage) {
             const token = localStorage.getItem(GITHUB_TOKEN_KEY);
             if (!token) {
                 alert('Token no disponible. Por favor, inicia sesión de nuevo.');
                 logout();
-                return;
+                return false;
             }
 
             try {
-                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${PRODUCTS_FILE}`;
+                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`;
 
-                console.log('Paso 1: Obteniendo metadata del archivo');
-                // Obtener metadata del archivo usando el header correcto para obtener info completa
+                // Obtener SHA actual del archivo (si existe)
+                let sha = null;
                 const getResponse = await fetch(url, {
                     headers: {
                         'Authorization': `token ${token}`,
                         'User-Agent': 'Market-Zelle-Admin',
-                        'Accept': 'application/vnd.github.v3+json'  // Este header devuelve el metadata JSON
+                        'Accept': 'application/vnd.github.v3+json'
                     }
                 });
 
-                if (!getResponse.ok) {
-                    const errorBody = await getResponse.text();
-                    console.error('Error:', getResponse.status, errorBody);
-                    
-                    if (getResponse.status === 401) {
-                        throw new Error('Token inválido o sin permisos');
+                if (getResponse.ok) {
+                    const meta = await getResponse.json();
+                    if (meta && meta.sha) {
+                        sha = meta.sha;
                     }
-                    if (getResponse.status === 404) {
-                        throw new Error('Archivo no encontrado en el repositorio');
-                    }
+                } else if (getResponse.status === 401) {
+                    throw new Error('Token inválido o sin permisos');
+                } else if (getResponse.status !== 404) {
                     throw new Error(`Error ${getResponse.status}`);
                 }
+                // 404 => el archivo no existe todavía, se creará (sha null)
 
-                const response = await getResponse.json();
-                console.log('Respuesta completa de GitHub:', response);
+                const body = {
+                    message: commitMessage,
+                    content: utf8ToBase64(contentString)
+                };
+                if (sha) body.sha = sha;
 
-                // Detectar si es el metadata o el contenido
-                let sha;
-                if (response.sha) {
-                    // Es el metadata
-                    sha = response.sha;
-                    console.log('SHA obtenido del metadata:', sha.substring(0, 8) + '...');
-                } else if (Array.isArray(response)) {
-                    // Es el contenido directo, necesitamos obtener el SHA de otra forma
-                    console.warn('Se obtuvo contenido en lugar de metadata. Intentando obtener SHA...');
-                    
-                    // Hacer un request con Accept: application/vnd.github.v3.raw para obtener solo el contenido
-                    // y luego usar git/trees para obtener el SHA
-                    const treeUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/trees/main?recursive=1`;
-                    const treeResponse = await fetch(treeUrl, {
-                        headers: {
-                            'Authorization': `token ${token}`,
-                            'User-Agent': 'Market-Zelle-Admin'
-                        }
-                    });
-
-                    if (treeResponse.ok) {
-                        const treeData = await treeResponse.json();
-                        const file = treeData.tree.find(f => f.path === PRODUCTS_FILE);
-                        if (file) {
-                            sha = file.sha;
-                            console.log('SHA obtenido del árbol:', sha.substring(0, 8) + '...');
-                        }
-                    }
-
-                    if (!sha) {
-                        throw new Error('No se pudo obtener el SHA del archivo. Intenta más tarde.');
-                    }
-                } else {
-                    throw new Error('Respuesta inesperada de GitHub: ' + JSON.stringify(response).substring(0, 100));
-                }
-
-                if (!sha) {
-                    throw new Error('SHA vacío. No se puede actualizar el archivo.');
-                }
-
-                console.log('Paso 2: Guardando productos con SHA:', sha.substring(0, 8) + '...');
-
-                // Actualizar archivo
                 const updateResponse = await fetch(url, {
                     method: 'PUT',
                     headers: {
@@ -881,11 +1180,7 @@
                         'Content-Type': 'application/json',
                         'User-Agent': 'Market-Zelle-Admin'
                     },
-                    body: JSON.stringify({
-                        message: 'Actualizar productos desde panel de administración',
-                        content: btoa(JSON.stringify(currentProducts, null, 2)),
-                        sha: sha
-                    })
+                    body: JSON.stringify(body)
                 });
 
                 if (!updateResponse.ok) {
@@ -894,11 +1189,13 @@
                     throw new Error(`Error ${updateResponse.status}: ${errorBody.message}`);
                 }
 
-                console.log('✅ Guardado exitoso');
-                alert('✅ Productos guardados correctamente.\n\nEl sitio se actualizará en 1-2 minutos.');
+                console.log('✅ Guardado exitoso:', filePath);
+                alert('✅ ' + successMessage + '\n\nEl sitio se actualizará en 1-2 minutos.');
+                return true;
             } catch (error) {
                 console.error('❌ Error:', error);
                 alert('❌ Error al guardar:\n\n' + error.message);
+                return false;
             }
         }
 

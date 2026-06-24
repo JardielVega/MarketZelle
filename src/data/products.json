@@ -73,11 +73,11 @@
   },
   {
     "id": 8,
-    "name": "Paca de Azúcar (10u)",
+    "name": "Paca de AzÃºcar (10u)",
     "price": 22,
     "category": "alimentos",
     "top": false,
-    "description": "Pack de 10 unidades de azúcar blanca",
+    "description": "Pack de 10 unidades de azÃºcar blanca",
     "image": "/Productos/azucar.jpg"
   },
   {
@@ -157,17 +157,17 @@
     "name": "Ventilador Recargable F6",
     "price": 70,
     "category": "electronicos",
-    "description": "Ventilador recargable portátil F6, batería larga duración",
+    "description": "Ventilador recargable portÃ¡til F6, baterÃ­a larga duraciÃ³n",
     "image": "/Productos/F6.jpg",
     "top": false
   },
   {
     "id": 18,
-    "name": "Lámpara Recargable 40W",
+    "name": "LÃ¡mpara Recargable 40W",
     "price": 10.99,
     "category": "electronicos",
     "top": false,
-    "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
+    "description": "LÃ¡mpara recargable de 40 Watts, luz potente y duradera",
     "image": "/Productos/lampara.jpg"
   },
   {
@@ -181,10 +181,10 @@
   },
   {
     "id": 21,
-    "name": "Café Vima",
+    "name": "CafÃ© Vima",
     "price": 8,
     "category": "alimentos",
-    "description": "Café Vima, paquete sellado de 250g",
+    "description": "CafÃ© Vima, paquete sellado de 250g",
     "image": "/Productos/caf-vima-1782244588493.webp",
     "top": false
   },
@@ -208,10 +208,10 @@
   },
   {
     "id": 24,
-    "name": "Jamón Bravo",
+    "name": "JamÃ³n Bravo",
     "price": 20,
     "category": "alimentos",
-    "description": "Jamón Bravo Barra de 2kg",
+    "description": "JamÃ³n Bravo Barra de 2kg",
     "image": "/Productos/jamn-bravo-1782245722893.webp",
     "top": false
   },
@@ -220,7 +220,7 @@
     "name": "Yogurt Natural Xtasis Tropical 4L",
     "price": 10,
     "category": "alimentos",
-    "description": "Ingredientes: Agua, leche entera, leche descremada, azúcar refino, cultivos lácteos, saborizantes artificiales, pulpas y frutas naturales.",
+    "description": "Ingredientes: Agua, leche entera, leche descremada, azÃºcar refino, cultivos lÃ¡cteos, saborizantes artificiales, pulpas y frutas naturales.",
     "image": "/Productos/yogurt-natural-xtasis-tropical-4l-1782246034168.jpeg",
     "top": true
   },
@@ -229,7 +229,7 @@
     "name": "Detergente Multiuso 5L",
     "price": 7,
     "category": "aseo",
-    "description": "Detergente Líquido de 5L Lavavajillas ",
+    "description": "Detergente LÃ­quido de 5L Lavavajillas ",
     "image": "/Productos/detergente-multiuso-5l-1782269787028.jpeg",
     "top": false
   }
