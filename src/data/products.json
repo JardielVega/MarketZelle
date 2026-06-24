@@ -84,10 +84,10 @@
     "id": 9,
     "name": "Paca de Frijoles (10u)",
     "price": 22,
-    "category": "alimentos",
-    "top": false,
+    "category": "electronicos",
     "description": "Pack de 10 unidades de frijoles de primera calidad",
-    "image": "/Productos/frijol.jpg"
+    "image": "/Productos/frijol.jpg",
+    "top": false
   },
   {
     "id": 10,
