@@ -1,14 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Aceite (5 pomos)",
-    "price": 20,
-    "category": "alimentos",
-    "top": true,
-    "description": "Aceite vegetal de alta calidad, pack de 5 pomos",
-    "image": "/Productos/aceite.jpg"
-  },
-  {
     "id": 2,
     "name": "Libra de Lomo",
     "price": 4,
@@ -16,6 +7,15 @@
     "top": false,
     "description": "Corte de carne fresca y de primera calidad",
     "image": "/Productos/lomo.jpg"
+  },
+  {
+    "id": 1,
+    "name": "Aceite (5 pomos)",
+    "price": 20,
+    "category": "alimentos",
+    "top": true,
+    "description": "Aceite vegetal de alta calidad, pack de 5 pomos",
+    "image": "/Productos/aceite.jpg"
   },
   {
     "id": 3,
