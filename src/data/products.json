@@ -153,15 +153,6 @@
     "image": "/Productos/pollo.jpg"
   },
   {
-    "id": 18,
-    "name": "Lámpara Recargable 40W",
-    "price": 10.99,
-    "category": "electronicos",
-    "top": false,
-    "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
-    "image": "/Productos/lampara.jpg"
-  },
-  {
     "id": 17,
     "name": "Ventilador Recargable F6",
     "price": 70,
@@ -169,6 +160,15 @@
     "description": "Ventilador recargable portátil F6, batería larga duración",
     "image": "/Productos/F6.jpg",
     "top": false
+  },
+  {
+    "id": 18,
+    "name": "Lámpara Recargable 40W",
+    "price": 10.99,
+    "category": "electronicos",
+    "top": false,
+    "description": "Lámpara recargable de 40 Watts, luz potente y duradera",
+    "image": "/Productos/lampara.jpg"
   },
   {
     "id": 19,
