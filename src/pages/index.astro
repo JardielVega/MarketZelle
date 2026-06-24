@@ -147,13 +147,6 @@ const productRows = categories.filter((cat) => cat.id !== 'todos' && cat.id !== 
         </div>
       ))}
     </div>
-    <!-- Carousel Controls -->
-    <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-    </button>
-    <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-    </button>
     <!-- Dots -->
     <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
       {bannerSlides.map((_, i) => (
@@ -374,8 +367,6 @@ const productRows = categories.filter((cat) => cat.id !== 'todos' && cat.id !== 
     // ===== CAROUSEL =====
     const track = document.getElementById('carouselTrack') as HTMLElement;
     const dots = document.querySelectorAll('.carousel-dot');
-    const prevBtn = document.getElementById('prevSlide');
-    const nextBtn = document.getElementById('nextSlide');
     let currentSlide = 0;
     const totalSlides = dots.length;
 
@@ -389,8 +380,6 @@ const productRows = categories.filter((cat) => cat.id !== 'todos' && cat.id !== 
       });
     }
 
-    prevBtn?.addEventListener('click', () => goToSlide(currentSlide - 1));
-    nextBtn?.addEventListener('click', () => goToSlide(currentSlide + 1));
     dots.forEach(dot => {
       dot.addEventListener('click', () => goToSlide(Number((dot as HTMLElement).dataset.index)));
     });
