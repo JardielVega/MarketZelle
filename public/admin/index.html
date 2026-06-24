@@ -88,8 +88,69 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 24px;
-            margin: 30px 0;
+            margin: 18px 0 0;
         }
+
+        .category-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .cat-filter-btn {
+            background: #f0fdf4;
+            color: #047857;
+            border: 2px solid #d1fae5;
+            padding: 9px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cat-filter-btn:hover { border-color: #10b981; }
+
+        .cat-filter-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .admin-category-section { margin-bottom: 40px; }
+
+        .admin-category-title {
+            font-size: 22px;
+            color: #1f2937;
+            margin: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d1fae5;
+        }
+
+        .admin-cat-count { font-size: 15px; color: #10b981; font-weight: 600; }
+
+        .admin-cat-empty { color: #9ca3af; margin: 16px 0 0; }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-order {
+            flex: 1;
+            background: #f0fdf4;
+            color: #047857;
+            border: 1px solid #d1fae5;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+
+        .btn-order:hover:not(:disabled) { background: #d1fae5; }
+
+        .btn-order:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .product-card {
             background: white;
@@ -483,7 +544,14 @@
                     <button class="btn" onclick="openAddProductModal()">➕ Nuevo Producto</button>
                 </div>
 
-                <div id="productsGrid" class="products-grid"></div>
+                <div class="category-filter-bar" id="adminCategoryFilter">
+                    <button class="cat-filter-btn active" data-cat="todos" onclick="setProductFilter('todos')">Todos</button>
+                    <button class="cat-filter-btn" data-cat="alimentos" onclick="setProductFilter('alimentos')">🥘 Alimentos</button>
+                    <button class="cat-filter-btn" data-cat="electronicos" onclick="setProductFilter('electronicos')">💻 Electrónicos</button>
+                    <button class="cat-filter-btn" data-cat="aseo" onclick="setProductFilter('aseo')">🧼 Aseo</button>
+                </div>
+
+                <div id="productsGrid"></div>
 
                 <div id="emptyState" class="empty-state hidden">
                     <p style="font-size: 48px; margin-bottom: 15px;">📭</p>
@@ -622,6 +690,12 @@
         const BANNERS_FILE = 'src/data/banners.json';
         let currentProducts = [];
         let currentBanners = [];
+        let activeProductCategory = 'todos';
+        const PRODUCT_CATEGORIES = [
+            { id: 'alimentos', name: '🥘 Alimentos' },
+            { id: 'electronicos', name: '💻 Electrónicos' },
+            { id: 'aseo', name: '🧼 Aseo' }
+        ];
         let editingProductIndex = -1;
         let editingBannerIndex = -1;
         let currentUser = '';
@@ -743,6 +817,56 @@
             }
         }
 
+        function setProductFilter(cat) {
+            activeProductCategory = cat;
+            document.querySelectorAll('#adminCategoryFilter .cat-filter-btn').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.cat === cat);
+            });
+            displayProducts();
+        }
+
+        async function moveProduct(index, dir) {
+            const category = currentProducts[index]?.category;
+            if (!category) return;
+
+            let target = -1;
+            for (let i = index + dir; i >= 0 && i < currentProducts.length; i += dir) {
+                if (currentProducts[i].category === category) {
+                    target = i;
+                    break;
+                }
+            }
+            if (target === -1) return;
+
+            const tmp = currentProducts[index];
+            currentProducts[index] = currentProducts[target];
+            currentProducts[target] = tmp;
+
+            displayProducts();
+            await saveProductsToGitHub();
+        }
+
+        function productCardHTML(product, index, isFirst, isLast) {
+            return `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                    <h3>${product.name}</h3>
+                    <p class="product-price">$${product.price.toFixed(2)}</p>
+                    <p><strong>Categoría:</strong> ${product.category}</p>
+                    ${product.top ? '<p style="color: #f59e0b;">⭐ Destacado</p>' : ''}
+                    <p>${product.description}</p>
+                    <div class="order-actions">
+                        <button class="btn btn-order" onclick="moveProduct(${index}, -1)" ${isFirst ? 'disabled' : ''} title="Subir en la categoría">⬆️ Subir</button>
+                        <button class="btn btn-order" onclick="moveProduct(${index}, 1)" ${isLast ? 'disabled' : ''} title="Bajar en la categoría">⬇️ Bajar</button>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn" onclick="editProduct(${index})">✏️ Editar</button>
+                        <button class="btn btn-danger" onclick="deleteProduct(${index})">🗑️ Eliminar</button>
+                    </div>
+                </div>
+            `;
+        }
+
         function displayProducts() {
             const grid = document.getElementById('productsGrid');
             const emptyState = document.getElementById('emptyState');
@@ -754,20 +878,29 @@
             }
 
             emptyState.classList.add('hidden');
-            grid.innerHTML = currentProducts.map((product, index) => `
-                <div class="product-card">
-                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
-                    <h3>${product.name}</h3>
-                    <p class="product-price">$${product.price.toFixed(2)}</p>
-                    <p><strong>Categoría:</strong> ${product.category}</p>
-                    ${product.top ? '<p style="color: #f59e0b;">⭐ Destacado</p>' : ''}
-                    <p>${product.description}</p>
-                    <div class="product-actions">
-                        <button class="btn" onclick="editProduct(${index})">✏️ Editar</button>
-                        <button class="btn btn-danger" onclick="deleteProduct(${index})">🗑️ Eliminar</button>
-                    </div>
-                </div>
-            `).join('');
+
+            const cats = activeProductCategory === 'todos'
+                ? PRODUCT_CATEGORIES
+                : PRODUCT_CATEGORIES.filter((c) => c.id === activeProductCategory);
+
+            grid.innerHTML = cats.map((cat) => {
+                const items = currentProducts
+                    .map((product, index) => ({ product, index }))
+                    .filter((o) => o.product.category === cat.id);
+
+                const cards = items.length === 0
+                    ? '<p class="admin-cat-empty">No hay productos en esta categoría.</p>'
+                    : `<div class="products-grid">${items.map((o, pos) =>
+                        productCardHTML(o.product, o.index, pos === 0, pos === items.length - 1)
+                      ).join('')}</div>`;
+
+                return `
+                    <section class="admin-category-section">
+                        <h2 class="admin-category-title">${cat.name} <span class="admin-cat-count">(${items.length})</span></h2>
+                        ${cards}
+                    </section>
+                `;
+            }).join('');
         }
 
         function switchTab(tab) {
